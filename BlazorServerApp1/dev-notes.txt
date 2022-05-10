@@ -37,10 +37,12 @@ Comment I added to Uilogic.cs doorFldsFilled() method :
 
 13/03/2022
 github :
-   decided ti use github and not bitbucket, becauase VS2022's IDE is integrated with Github and not Bitbucket .
+   decided to use github and not bitbucket, becauase VS2022's IDE is integrated with Github and not Bitbucket .
    From "Git Changes", one can easily commit and then PUSH the commit to github.
    In Github   the following URL points to the list of "Commits" of the barnch named "master" : https://github.com/zpalgy/ElidoorBlazorServerApp1/commits/master
    For that I had to make the repository PUBLIC .
+
+   The URL of the repository is https://github.com/zpalgy/ElidoorBlazorServerApp1
 
 
 11/03/2022
