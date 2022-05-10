@@ -1,0 +1,123 @@
+﻿body {
+}
+
+/*
+#divMainContainer{
+    display:inline-block;
+}
+    */
+
+#divMainMenuButtons, divMainForm {
+    display: inline-block;
+}
+
+.button {
+    width: 120px;
+    height: 50px;
+    color: blue;
+    border-color: blue;
+    text-wrap: normal;
+    text-align:center;
+    transition-duration: 0.4s;
+}
+
+.float-right {
+    float:right;
+}
+.comment {
+	width: 1000px; 
+	  height: 30px; 
+	  border: solid;
+	  border-color: black; 
+	  border-radius: 5px;
+	  float: right;
+}
+
+.button:hover {
+        background-color: blueviolet;
+        color: yellow;
+}
+
+input /* asp:TextBox */
+{
+
+}
+/* input  type="submit" = button */
+
+.label {
+    border:thin;
+    border-color: black;
+    width: 30px;
+    height :12px;
+}
+select /* asp:DropDownList */ {
+
+
+}
+th, td {
+    padding: 15px;
+    text-align: center;
+}
+
+.userControl {
+    border:solid;
+    border-color : black;
+}
+
+#contentArea ul {
+    text-align: right;
+}
+
+    #contentArea ul li {
+        float: none;
+        display: inline-block;
+    }
+#TabContainerWingPlusHalf  {
+    text-align: right;
+}
+
+#contentArea ul li {
+    float: none;
+    display: inline-block;
+}
+.tabDiv {
+    display: inline-block;
+    border: solid;
+    border-color: black;
+    /* width:2100px; */
+    /* height:200px; */
+    width: auto;
+}
+
+.menuButtonsDiv {
+    display: inline-block;
+    border: solid;
+    border-color : black;
+    min-height : 1200px;
+}
+.mainFormDiv {
+    display: inline-block;
+    border: solid;
+    border-color: black;
+    min-height: 1200px;
+    min-width: 2000px;
+}
+a {
+    text-align:center;
+}
+.redBorder 
+{
+    border-color: red;
+}
+/*
+.redTitle {
+    color: red;
+    font-weight: bold;
+    font-size: 150%;
+}
+.redMessage {
+    color: red;
+    font-weight: bold;
+    font-size: 180%;
+}
+*/

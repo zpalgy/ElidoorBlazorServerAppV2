@@ -1,0 +1,831 @@
+﻿@page "/Intdecor"
+
+@inject IJSRuntime Js
+
+@implements IDisposable
+
+@inject NavigationManager Navigator
+
+<style>
+    th, td {
+        padding: 15px;
+        text-align: center;
+    }
+</style>
+
+@code
+{
+    [Parameter]
+    public DoorConfig doorConfig { get; set; }
+
+    [Parameter]
+    public bool ExtdecorIsFull { get; set; }
+}
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+		
+        //if (!ExtdecorIsFull)
+        //{
+        //    // navigate back to Movingwing 
+        //    //[TODO]  Navigator.NavigateTo("Movingwing");
+        //}
+
+		//if (!UiLogic.tabPageIsFilled("extdecor", doorConfig))
+  //      {
+  //          Js.InvokeVoidAsync("alert", "יש למלא את כל השדות בלשונית 'דקורציה חוץ' י");
+  //      }
+
+        //var doorConfigJsonV = await ProtectedSessionStore.GetAsync<string> ("doorConfigJson");
+        //if (doorConfigJsonV.Success)
+        //{
+        //    string doorConfigJson2 = doorConfigJsonV.Value;
+        //    if (!string.IsNullOrEmpty(doorConfigJson2))
+        //         doorConfig = Newtonsoft.Json.JsonConvert.DeserializeObject<DoorConfig>(doorConfigJson2);
+        //UiLogic.restoreDoorConfig(ProtectedSessionStore, doorConfig);          
+
+        //Js.InvokeVoidAsync("alert", string.Format("in Extdecor:onInitializedAsync doorConfig.EXTCOLORID = {0}", doorConfig.EXTCOLORID));  //debug
+     }
+    
+    
+    async void IDisposable.Dispose()
+    {
+		 //if (!UiLogic.tabPageIsFilled("intdecor", doorConfig))
+   //     {
+   //         Js.InvokeVoidAsync("alert", "יש למלא את כל השדות בלשונית 'דקורציה פנים' י");
+   //     }
+        //int x = 17;
+        //if (x == 18)
+        //{
+        //    Js.InvokeVoidAsync("alert", "error !");
+        //    //NavigationManager.NavigateTo("Movingwing", true);
+        //}
+    }
+}
+
+<table id="intDecorL1">
+                                                <tr>
+                                                    <th id="thIntColor" hidden="@UiLogic.hideFld(doorConfig, "thIntColor")">גוון מעטה פנים</th>
+                                                    <th id="thIntCPlateHTDmndClr" hidden="@UiLogic.hideFld(doorConfig, "thIntCPlateHTDmndClr")">(גוון לוח מרכזי מעטה פנים (הייטק\יהלום</th>
+                                                    <th id="thIntPerifProfileClr" hidden="@UiLogic.hideFld(doorConfig, "thIntPerifProfileClr")">גוון פרופיל היקפי מעטה פנים</th>
+                                                    <th id="thIntSideCntrPlateClr" hidden="@UiLogic.hideFld(doorConfig, "thIntSideCntrPlateClr")">גוון לוח צידי\אמצעי מעטה פנימי</th>
+                                                    <th id="thIntSepLinesClr" hidden="@UiLogic.hideFld(doorConfig, "thIntSepLinesClr")">גוון פסי הפרדה מעטה פנים</th>
+                                                    <th id="thIntModernCPlateClr" hidden="@UiLogic.hideFld(doorConfig, "thIntModernCPlateClr")">גוון לוח מרכזי למודרני מעטה פנים</th>
+                                                    <th id="thIntCGridClr" hidden="@UiLogic.hideFld(doorConfig, "thIntCGridClr")">גוון סורג מרכזי מעטה פנים</th>
+                                                </tr>
+                                                <tr>
+                                                    <td id="tdIntColor" hidden="@UiLogic.hideFld(doorConfig, "thIntColor")">
+                                                        <select name="dlstIntColor" @bind="IntColor" class= "@doorConfig.borderColors["INTCOLORID"]" >
+                                                            @if (PrApiCalls.lstColors != null)
+	                                                        {
+		                                                        @foreach (TRSH_COLOR_Class c in PrApiCalls.lstColors)
+		                                                        {
+			                                                        <option value="@c.TRSH_COLORID">@c.TRSH_COLORDES</option>
+		                                                        }
+	                                                        }
+                                                        </select>
+                                                    </td>
+                                                    @code
+                                                    {
+	                                                    protected int _IntColor = 0;
+	                                                    protected int IntColor
+	                                                    {
+		                                                    get
+		                                                    {
+			                                                    if (doorConfig != null)
+			                                                    {
+				                                                    _IntColor = doorConfig.INTCOLORID;
+			                                                    }
+			                                                    return _IntColor;
+		                                                    }
+		                                                    set
+		                                                    {
+			                                                    _IntColor = value;
+			                                                    if (doorConfig != null)
+																{
+				                                                    doorConfig.INTCOLORID = _IntColor;
+																	doorConfig.borderColors["INTCOLORID"] = (value != 0 ? string.Empty : "redBorder");
+																	UiLogic.clearFollowingTabFields(doorConfig, "intdecor");
+																}
+		                                                    }
+	                                                    }
+                                                    }
+                                                    <td id="tdIntCPlateHTDmndClr" hidden="@UiLogic.hideFld(doorConfig, "thIntCPlateHTDmndClr")">
+                                                        <select name="dlstIntCPlateHTDmndClr" @bind="IntCPlateHTDmndClr" 
+														                 class= "@doorConfig.borderColors["INTCPLATEHTDMNDCLRID"]" >
+                                                            @if (PrApiCalls.lstColors != null)
+	                                                        {
+		                                                        @foreach (TRSH_COLOR_Class c in PrApiCalls.lstColors)
+		                                                        {
+			                                                        <option value="@c.TRSH_COLORID">@c.TRSH_COLORDES</option>
+		                                                        }
+	                                                        }
+                                                        </select>
+                                                    </td>
+                                                    @code
+                                                    {
+	                                                    protected int _IntCPlateHTDmndClr = 0;
+	                                                    protected int IntCPlateHTDmndClr
+	                                                    {
+		                                                    get
+		                                                    {
+			                                                    if (doorConfig != null)
+			                                                    {
+				                                                    _IntCPlateHTDmndClr = doorConfig.INTCPLATEHTDMNDCLRID;
+			                                                    }
+			                                                    return _IntCPlateHTDmndClr;
+		                                                    }
+		                                                    set
+		                                                    {
+			                                                    _IntCPlateHTDmndClr = value;
+			                                                    if (doorConfig != null)
+																{
+				                                                    doorConfig.INTCPLATEHTDMNDCLRID = _IntCPlateHTDmndClr;
+																	doorConfig.borderColors["INTCPLATEHTDMNDCLRID"] = (value != 0 ? string.Empty : "redBorder");
+																	UiLogic.clearFollowingTabFields(doorConfig, "intdecor");
+																}
+		                                                    }
+	                                                    }
+                                                    }
+
+                                                    <td id="tdIntPerifProfileClr" hidden="@UiLogic.hideFld(doorConfig, "thIntPerifProfileClr")">
+                                                        <select name="dlstIntPerifProfileClr" @bind="IntPerifProfileClr" 
+														                     class= "@doorConfig.borderColors["INTPERIFPROFILECLRID"]"  >
+                                                            @if (PrApiCalls.lstColors != null)
+	                                                        {
+		                                                        @foreach (TRSH_COLOR_Class c in PrApiCalls.lstColors)
+		                                                        {
+			                                                        <option value="@c.TRSH_COLORID">@c.TRSH_COLORDES</option>
+		                                                        }
+	                                                        }
+                                                        </select>
+                                                    </td>
+                                                    @code
+                                                    {
+	                                                    protected int _IntPerifProfileClr = 0;
+	                                                    protected int IntPerifProfileClr
+	                                                    {
+		                                                    get
+		                                                    {
+			                                                    if (doorConfig != null)
+			                                                    {
+				                                                    _IntPerifProfileClr = doorConfig.INTPERIFPROFILECLRID;
+			                                                    }
+			                                                    return _IntPerifProfileClr;
+		                                                    }
+		                                                    set
+		                                                    {
+			                                                    _IntPerifProfileClr = value;
+			                                                    if (doorConfig != null)
+																{
+				                                                    doorConfig.INTPERIFPROFILECLRID = _IntPerifProfileClr;
+																	doorConfig.borderColors["INTPERIFPROFILECLRID"] = (value != 0 ? string.Empty : "redBorder");
+																	UiLogic.clearFollowingTabFields(doorConfig, "intdecor");
+																}
+		                                                    }
+	                                                    }
+                                                    }
+                                                    <td id="tdIntSideCntrPlateClr" hidden="@UiLogic.hideFld(doorConfig, "thIntSideCntrPlateClr")">
+                                                        <select name="dlstIntSideCntrPlateClr" @bind="IntSideCntrPlateClr"  
+														                     class= "@doorConfig.borderColors["INTSIDECNTRPLATECLID"]" >
+                                                           @if (PrApiCalls.lstColors != null)
+	                                                        {
+		                                                        @foreach (TRSH_COLOR_Class c in PrApiCalls.lstColors)
+		                                                        {
+			                                                        <option value="@c.TRSH_COLORID">@c.TRSH_COLORDES</option>
+		                                                        }
+	                                                        }
+                                                        </select>
+                                                    </td>
+                                                    @code
+                                                    {
+	                                                    protected int _IntSideCntrPlateClr = 0;
+	                                                    protected int IntSideCntrPlateClr
+	                                                    {
+		                                                    get
+		                                                    {
+			                                                    if (doorConfig != null)
+			                                                    {
+				                                                    _IntSideCntrPlateClr = doorConfig.INTSIDECNTRPLATECLID;
+			                                                    }
+			                                                    return _IntSideCntrPlateClr;
+		                                                    }
+		                                                    set
+		                                                    {
+			                                                    _IntSideCntrPlateClr = value;
+			                                                    if (doorConfig != null)
+																{
+				                                                    doorConfig.INTSIDECNTRPLATECLID = _IntSideCntrPlateClr;
+																	doorConfig.borderColors["INTSIDECNTRPLATECLID"] = (value != 0 ? string.Empty : "redBorder");
+																	UiLogic.clearFollowingTabFields(doorConfig, "intdecor");
+																}
+		                                                    }
+	                                                    }
+                                                    }
+                                                    <td id="tdIntSepLinesClr" hidden="@UiLogic.hideFld(doorConfig, "thIntSepLinesClr")">
+                                                        <select name="dlstIntSepLinesClr" @bind="IntSepLinesClr" class= "@doorConfig.borderColors["INTSEPLINESCLRID"]"  >
+                                                            @if (PrApiCalls.lstColors != null)
+	                                                        {
+		                                                        @foreach (TRSH_COLOR_Class c in PrApiCalls.lstColors)
+		                                                        {
+			                                                        <option value="@c.TRSH_COLORID">@c.TRSH_COLORDES</option>
+		                                                        }
+	                                                        }
+                                                        </select>
+                                                    </td>
+													@code
+													{
+														protected int _IntSepLinesClr = 0;
+														protected int IntSepLinesClr
+														{
+															get
+															{
+																if (doorConfig != null)
+																{
+																	_IntSepLinesClr = doorConfig.INTSEPLINESCLRID;
+																}
+																return _IntSepLinesClr;
+															}
+															set
+															{
+																_IntSepLinesClr = value;
+																if (doorConfig != null)
+																{
+																	doorConfig.INTSEPLINESCLRID = _IntSepLinesClr;
+																	doorConfig.borderColors["INTSEPLINESCLRID"] = (value != 0 ? string.Empty : "redBorder");
+																	UiLogic.clearFollowingTabFields(doorConfig, "intdecor");
+																}
+															}
+														}
+													}
+                                                    <td id="tdIntModernCPlateClr" hidden="@UiLogic.hideFld(doorConfig, "thIntModernCPlateClr")">
+                                                        <select name="dlstIntModernCPlateClr" @bind="IntModernCPlateClr" 
+														                                     class= "@doorConfig.borderColors["INTMODERNCPLATECLRID"]" >
+                                                            @if (PrApiCalls.lstColors != null)
+	                                                        {
+		                                                        @foreach (TRSH_COLOR_Class c in PrApiCalls.lstColors)
+		                                                        {
+			                                                        <option value="@c.TRSH_COLORID">@c.TRSH_COLORDES</option>
+		                                                        }
+	                                                        }
+                                                        </select>
+                                                    </td>
+                                                    @code
+                                                    {
+	                                                    protected int _IntModernCPlateClr = 0;
+	                                                    protected int IntModernCPlateClr
+	                                                    {
+		                                                    get
+		                                                    {
+			                                                    if (doorConfig != null)
+			                                                    {
+				                                                    _IntModernCPlateClr = doorConfig.INTMODERNCPLATECLRID;
+			                                                    }
+			                                                    return _IntModernCPlateClr;
+		                                                    }
+		                                                    set
+		                                                    {
+			                                                    _IntModernCPlateClr = value;
+			                                                    if (doorConfig != null)
+																{
+				                                                    doorConfig.INTMODERNCPLATECLRID = _IntModernCPlateClr;
+																	doorConfig.borderColors["INTMODERNCPLATECLRID"] = (value != 0 ? string.Empty : "redBorder");
+																	UiLogic.clearFollowingTabFields(doorConfig, "intdecor");
+																}
+		                                                    }
+	                                                    }
+                                                    }
+                                                    <td id="tdIntCGridClr" hidden="@UiLogic.hideFld(doorConfig, "thIntCGridClr")">
+                                                        <select name="dlstIntCGridClr" @bind="IntCGridClr" class= "@doorConfig.borderColors["INTCGRIDCLRID"]" >
+                                                            @if (PrApiCalls.lstColors != null)
+	                                                        {
+		                                                        @foreach (TRSH_COLOR_Class c in PrApiCalls.lstColors)
+		                                                        {
+			                                                        <option value="@c.TRSH_COLORID">@c.TRSH_COLORDES</option>
+		                                                        }
+	                                                        }
+                                                        </select>
+                                                    </td>
+                                                    @code
+                                                    {
+	                                                    protected int _IntCGridClr = 0;
+	                                                    protected int IntCGridClr
+	                                                    {
+		                                                    get
+		                                                    {
+			                                                    if (doorConfig != null)
+			                                                    {
+				                                                    _IntCGridClr = doorConfig.INTCGRIDCLRID;
+			                                                    }
+			                                                    return _IntCGridClr;
+		                                                    }
+		                                                    set
+		                                                    {
+			                                                    _IntCGridClr = value;
+			                                                    if (doorConfig != null)
+																{
+				                                                    doorConfig.INTCGRIDCLRID = _IntCGridClr;
+																	doorConfig.borderColors["INTCGRIDCLRID"] = (value != 0 ? string.Empty : "redBorder");
+																	UiLogic.clearFollowingTabFields(doorConfig, "intdecor");
+																}
+		                                                    }
+	                                                    }
+                                                    }
+                                                </tr>
+                                            </table>
+                                            <!--end table intDecorL1 -->
+                                            <br />
+                                            <table id="intDecorL2">
+                                                <tr>
+                                                    <th id="thIntHTPlatesClr" hidden="@UiLogic.hideFld(doorConfig, "thIntHTPlatesClr")">גוון לוחות להייטק מעטה פנים</th>
+                                                    <th id="thIntGlassPlateClr" hidden="@UiLogic.hideFld(doorConfig, "thIntGlassPlateClr")">גוון לוח בזכוכית מעטה פנים</th>
+                                                    <th id="thIntModernPlateClr" hidden="@UiLogic.hideFld(doorConfig, "thIntModernPlateClr")">גוון לוח מודרני מעטה פנים</th>
+                                                    <th id="thIntNirostaLinesClr" hidden="@UiLogic.hideFld(doorConfig, "thIntNirostaLinesClr")">גוון פסי נירוסטה בפנים</th>
+                                                    <th id="thIntInsertCoverClr" hidden="@UiLogic.hideFld(doorConfig, "thIntInsertCoverClr")">גוון אינסרט מעטה פנים</th>
+                                                    <th id="thIntCPlateHTDmnd" hidden="@UiLogic.hideFld(doorConfig, "thIntCPlateHTDmnd")">לוח מרכזי מעטה פנים-הייטק\יהלום</th>
+                                                    <th id="thIntSide_C_Plate" hidden="@UiLogic.hideFld(doorConfig, "thIntSide_C_Plate")">לוח צידי\אמצעי מעטה פנים</th>
+                                                </tr>
+                                                <tr>
+                                                    <td id="tdIntHTPlatesClr" hidden="@UiLogic.hideFld(doorConfig, "thIntHTPlatesClr")">
+                                                        <select name="dlstIntHTPlatesClr" @bind="IntHTPlatesClr" class= "@doorConfig.borderColors["INTHTPLATESCLRID"]" >
+                                                            @if (PrApiCalls.lstColors != null)
+	                                                        {
+		                                                        @foreach (TRSH_COLOR_Class c in PrApiCalls.lstColors)
+		                                                        {
+			                                                        <option value="@c.TRSH_COLORID">@c.TRSH_COLORDES</option>
+		                                                        }
+	                                                        }
+                                                        </select>
+                                                    </td>
+                                                    @code
+                                                    {
+	                                                    protected int _IntHTPlatesClr = 0;
+	                                                    protected int IntHTPlatesClr
+	                                                    {
+		                                                    get
+		                                                    {
+			                                                    if (doorConfig != null)
+			                                                    {
+				                                                    _IntHTPlatesClr = doorConfig.INTHTPLATESCLRID;
+			                                                    }
+			                                                    return _IntHTPlatesClr;
+		                                                    }
+		                                                    set
+		                                                    {
+			                                                    _IntHTPlatesClr = value;
+			                                                    if (doorConfig != null)
+																{
+				                                                    doorConfig.INTHTPLATESCLRID = _IntHTPlatesClr;
+																	doorConfig.borderColors["INTHTPLATESCLRID"] = (value != 0 ? string.Empty : "redBorder");
+																	UiLogic.clearFollowingTabFields(doorConfig, "intdecor");
+																}
+		                                                    }
+	                                                    }
+                                                    }
+                                                    <td id="tdIntGlassPlateClr" hidden="@UiLogic.hideFld(doorConfig, "thIntGlassPlateClr")">
+                                                        <select name="dlstIntGlassPlateClr" @bind="IntGlassPlateClr" 
+														                             class= "@doorConfig.borderColors["INTGLASSPLATECLRID"]" >
+                                                            @if (PrApiCalls.lstGlassColors4Diamond != null)
+	                                                        {
+		                                                        @foreach (TRSH_COLOR_Class c in PrApiCalls.lstGlassColors4Diamond)
+		                                                        {
+			                                                        <option value="@c.TRSH_COLORID">@c.TRSH_COLORDES</option>
+		                                                        }
+	                                                        }
+                                                        </select>
+                                                        </td>
+														@code
+														{
+															protected int _IntGlassPlateClr = 0;
+															protected int IntGlassPlateClr
+															{
+																get
+																{
+																	if (doorConfig != null)
+																	{
+																		_IntGlassPlateClr = doorConfig.INTGLASSPLATECLRID;
+																	}
+																	return _IntGlassPlateClr;
+																}
+																set
+																{
+																	_IntGlassPlateClr = value;
+																	if (doorConfig != null)
+																	{
+																		doorConfig.INTGLASSPLATECLRID = _IntGlassPlateClr;
+																		doorConfig.borderColors["INTGLASSPLATECLRID"] = (value != 0 ? string.Empty : "redBorder");
+																		UiLogic.clearFollowingTabFields(doorConfig, "intdecor");
+																	}
+																}
+															}
+														}
+                                                    <td id="tdIntModernPlateClr" hidden="@UiLogic.hideFld(doorConfig, "thIntModernPlateClr")">
+                                                        <select name="dlstIntModernPlateClr" @bind="IntModernPlateClr" 
+														                                 class= "@doorConfig.borderColors["INTMODERNPLATECLRID"]" >
+                                                            @if (PrApiCalls.lstColors != null)
+	                                                        {
+		                                                        @foreach (TRSH_COLOR_Class c in PrApiCalls.lstColors)
+		                                                        {
+			                                                        <option value="@c.TRSH_COLORID">@c.TRSH_COLORDES</option>
+		                                                        }
+	                                                        }
+                                                        </select>
+                                                    </td>
+                                                    @code
+													{
+														protected int _IntModernPlateClr = 0;
+														protected int IntModernPlateClr
+														{
+															get
+															{
+																if (doorConfig != null)
+																{
+																	_IntModernPlateClr = doorConfig.INTMODERNPLATECLRID;
+																}
+																return _IntModernPlateClr;
+															}
+															set
+															{
+																_IntModernPlateClr = value;
+																if (doorConfig != null)
+																{
+																	doorConfig.INTMODERNPLATECLRID = _IntModernPlateClr;
+																	doorConfig.borderColors["INTMODERNPLATECLRID"] = (value != 0 ? string.Empty : "redBorder");
+																	UiLogic.clearFollowingTabFields(doorConfig, "intdecor");
+																}
+															}
+														}
+													}
+                                                    <td id="tdIntNirostaLinesClr" hidden="@UiLogic.hideFld(doorConfig, "thIntNirostaLinesClr")">
+                                                        <select name="dlstIntNirostaLinesClr" @bind="IntNirostaLinesClr" 
+														                                       class= "@doorConfig.borderColors["INTNIROSTALINESCLRID"]" >
+                                                            @if (PrApiCalls.lstColors != null)
+	                                                        {
+		                                                        @foreach (TRSH_COLOR_Class c in PrApiCalls.lstColors)
+		                                                        {
+			                                                        <option value="@c.TRSH_COLORID">@c.TRSH_COLORDES</option>
+		                                                        }
+	                                                        }
+                                                        </select>
+                                                    </td>
+													@code
+													{
+														protected int _IntNirostaLinesClr = 0;
+														protected int IntNirostaLinesClr
+														{
+															get
+															{
+																if (doorConfig != null)
+																{
+																	_IntNirostaLinesClr = doorConfig.INTNIROSTALINESCLRID;
+																}
+																return _IntNirostaLinesClr;
+															}
+															set
+															{
+																_IntNirostaLinesClr = value;
+																if (doorConfig != null)
+																{
+																	doorConfig.INTNIROSTALINESCLRID = _IntNirostaLinesClr;
+																	doorConfig.borderColors["INTNIROSTALINESCLRID"] = (value != 0 ? string.Empty : "redBorder");
+																	UiLogic.clearFollowingTabFields(doorConfig, "intdecor");
+																}
+															}
+														}
+													}
+                                                    <td id="tdIntInsertCoverClr" hidden="@UiLogic.hideFld(doorConfig, "thIntInsertCoverClr")">
+                                                        <select name="dlstIntInsertCoverClr" @bind="IntInsertCoverClr" class= "@doorConfig.borderColors["INTINSERTCLRID"]" >
+                                                            @if (PrApiCalls.lstColors != null)
+	                                                        {
+		                                                        @foreach (TRSH_COLOR_Class c in PrApiCalls.lstColors)
+		                                                        {
+			                                                        <option value="@c.TRSH_COLORID">@c.TRSH_COLORDES</option>
+		                                                        }
+	                                                        }
+                                                        </select>
+                                                    </td>
+													@code
+													{
+														protected int _IntInsertCoverClr = 0;
+														protected int IntInsertCoverClr
+														{
+															get
+															{
+																if (doorConfig != null)
+																{
+																	_IntInsertCoverClr = doorConfig.INTINSERTCLRID;
+																}
+																return _IntInsertCoverClr;
+															}
+															set
+															{
+																_IntInsertCoverClr = value;
+																if (doorConfig != null)
+																{
+																	doorConfig.INTINSERTCLRID = _IntInsertCoverClr;
+																	doorConfig.borderColors["INTINSERTCLRID"] = (value != 0 ? string.Empty : "redBorder");
+																	UiLogic.clearFollowingTabFields(doorConfig, "intdecor");
+																}
+															}
+														}
+													}
+                                                    <td id="tdIntCPlateHTDmnd" hidden="@UiLogic.hideFld(doorConfig, "thIntCPlateHTDmnd")">
+                                                        <select name="dlstIntCPlateHTDmnd" @bind="IntCPlateHTDmnd" class= "@doorConfig.borderColors["INTCPLATE4HTDMNDNAME"]" >
+                                                            @if (PrApiCalls.lstRaw4CPlates != null)
+                                                             {
+	                                                            @foreach (RAW4CPLATES_Class c in PrApiCalls.lstRaw4CPlates)
+	                                                            {
+		                                                            <option value="@c.RAW4CPLATESNAME">@c.RAW4CPLATESNAME</option>
+	                                                            }
+                                                             }
+                                                        </select>
+                                                    </td>
+													@code
+													{
+														protected string _IntCPlateHTDmnd = string.Empty;
+														protected string IntCPlateHTDmnd
+														{
+															get
+															{
+																if (doorConfig != null)
+																{
+																	_IntCPlateHTDmnd = doorConfig.INTCPLATE4HTDMNDNAME;
+																}
+																return _IntCPlateHTDmnd;
+															}
+															set
+															{
+																_IntCPlateHTDmnd = value;
+																if (doorConfig != null)
+																{
+																	doorConfig.INTCPLATE4HTDMNDNAME = _IntCPlateHTDmnd;
+																	doorConfig.borderColors["INTCPLATE4HTDMNDNAME"] = (!string.IsNullOrEmpty(value) ? string.Empty : "redBorder");
+																	UiLogic.clearFollowingTabFields(doorConfig, "intdecor");
+																}
+															}
+														}
+													}
+                                                    <td id="tdIntSide_C_Plate" hidden="@UiLogic.hideFld(doorConfig, "thIntSide_C_Plate")">
+                                                        <select name="dlstIntSide_C_Plate" @bind="IntSide_C_Plate" class= "@doorConfig.borderColors["INTSIDE_C_PLATE"]" >
+                                                             @if (PrApiCalls.lstRaw4CPlates != null)
+                                                             {
+	                                                            @foreach (RAW4CPLATES_Class c in PrApiCalls.lstRaw4CPlates)
+	                                                            {
+		                                                            <option value="@c.RAW4CPLATESNAME">@c.RAW4CPLATESNAME</option>
+	                                                            }
+                                                             }
+                                                        </select>
+                                                    </td>
+													@code
+													{
+														protected string _IntSide_C_Plate = string.Empty;
+														protected string IntSide_C_Plate
+														{
+															get
+															{
+																if (doorConfig != null)
+																{
+																	_IntSide_C_Plate = doorConfig.INTSIDE_C_PLATE;
+																}
+																return _IntSide_C_Plate;
+															}
+															set
+															{
+																_IntSide_C_Plate = value;
+																if (doorConfig != null)
+																{
+																	doorConfig.INTSIDE_C_PLATE = _IntSide_C_Plate;
+																	doorConfig.borderColors["INTSIDE_C_PLATE"] = (!string.IsNullOrEmpty(value) ? string.Empty : "redBorder");
+																	UiLogic.clearFollowingTabFields(doorConfig, "intdecor");
+																}
+															}
+														}
+													}
+                                                </tr>
+                                            </table>
+                                            <!-- end table intDecorL2 -->
+                                            <table id="intDecorL3">
+                                                <tr>
+                                                    <th id="thIntGridCPlate" hidden="@UiLogic.hideFld(doorConfig, "thIntGridCPlate")">לוח מסורג מרכזי מעטה פנים</th>
+                                                    <th id="thIntHTPlate" hidden="@UiLogic.hideFld(doorConfig, "thIntHTPlate")">לוחות הייטק מעטה פנים</th>
+                                                    <th id="thIntVitrage4DiamondQ" hidden="@UiLogic.hideFld(doorConfig, "thIntVitrage4DiamondQ")">כמות ויטראז' לדגם יהלום מעטה פנים</th>
+                                                    <th id="thIntFinModernCPlate" hidden="@UiLogic.hideFld(doorConfig, "thIntFinModernCPlate")">גימור לוח מרכזי מודרני מעטה פנים</th>
+                                                    <th id="thIntFinModernSepLine" hidden="@UiLogic.hideFld(doorConfig, "thIntFinModernSepLine")">גימור פס מפריד מודרני מעטה פנים</th>
+                                                    <th id="thIntFinModernPlate" hidden="@UiLogic.hideFld(doorConfig, "thIntFinModernPlate")">גימור לוח מודרני מעטה פנים</th>
+                                                </tr>
+                                                <tr>
+                                                    <td id="tdIntGridCPlate" hidden="@UiLogic.hideFld(doorConfig, "thIntGridCPlate")">
+                                                        <select name="dlstIntGridCPlate" @bind="IntGridCPlate" class= "@doorConfig.borderColors["INTGRIDCPLATE"]" >
+															@if (PrApiCalls.lstGrids != null)
+															 {
+																@foreach (GRID_Class c in PrApiCalls.lstGrids)
+																{
+																	<option value="@c.GRIDNAME">@c.GRIDDES</option>
+																}
+															 }
+															 </select>
+                                                            @*
+															 DataValueField="GRID_ID"
+                                                            DataTextField="GRIDDES"
+                                                            SelectMethod="getGrids"
+                                                            *@
+                                                            onChange="clearFollowingTabs('intdecor')" />
+                                                    </td>
+													@code
+													{
+														protected string _IntGridCPlate = string.Empty;
+														protected string IntGridCPlate
+														{
+															get
+															{
+																if (doorConfig != null)
+																{
+																	_IntGridCPlate = doorConfig.INTGRIDCPLATE;
+																}
+																return _IntGridCPlate;
+															}
+															set
+															{
+																_IntGridCPlate = value;
+																if (doorConfig != null)
+																{
+																	doorConfig.INTGRIDCPLATE = _IntGridCPlate;
+																	doorConfig.borderColors["INTGRIDCPLATE"] = (!string.IsNullOrEmpty(value) ? string.Empty : "redBorder");
+																	UiLogic.clearFollowingTabFields(doorConfig, "intdecor");
+																}
+															}
+														}
+													}
+                                                    <td id="tdIntHTPlate" hidden="@UiLogic.hideFld(doorConfig, "thIntHTPlate")">
+                                                        <select name="dlstIntHTPlate" @bind="IntHTPlate" class= "@doorConfig.borderColors["INTHTPLATE"]" >
+                                                             @if (PrApiCalls.lstRaw4CPlates != null)
+                                                             {
+	                                                            @foreach (RAW4CPLATES_Class c in PrApiCalls.lstRaw4CPlates)
+	                                                            {
+		                                                            <option value="@c.RAW4CPLATESNAME">@c.RAW4CPLATESNAME</option>
+	                                                            }
+                                                             }
+                                                        </select>
+                                                    </td>
+													@code
+													{
+														protected string _IntHTPlate = string.Empty;
+														protected string IntHTPlate
+														{
+															get
+															{
+																if (doorConfig != null)
+																{
+																	_IntHTPlate = doorConfig.INTHTPLATE;
+																}
+																return _IntHTPlate;
+															}
+															set
+															{
+																_IntHTPlate = value;
+																if (doorConfig != null)
+																{
+																	doorConfig.INTHTPLATE = _IntHTPlate;
+																	doorConfig.borderColors["INTHTPLATE"] = (!string.IsNullOrEmpty(value) ? string.Empty : "redBorder");
+																	UiLogic.clearFollowingTabFields(doorConfig, "intdecor");
+																}
+															}
+														}
+													}
+
+                                                    <td id="tdIntVitrage4DiamondQ" hidden="@UiLogic.hideFld(doorConfig, "thIntVitrage4DiamondQ")">
+                                                        <input type="number"  name="txtIntVitrage4DiamondQ" @bind="IntVitrage4DiamondQ" 
+														     class= "@doorConfig.borderColors["INTVITRAGE4DIAMONDQ"]" >
+                                                    </td>
+													@code
+													{
+														protected int _IntVitrage4DiamondQ = 0;
+														protected int IntVitrage4DiamondQ
+														{
+															get
+															{
+																if (doorConfig != null)
+																{
+																	_IntVitrage4DiamondQ = doorConfig.INTVITRAGE4DIAMONDQ;
+																}
+																return _IntVitrage4DiamondQ;
+															}
+															set
+															{
+																_IntVitrage4DiamondQ = value;
+																if (doorConfig != null)
+																{
+																	doorConfig.INTVITRAGE4DIAMONDQ = _IntVitrage4DiamondQ;
+																	doorConfig.borderColors["INTVITRAGE4DIAMONDQ"] = (value != 0 ? string.Empty : "redBorder");
+																	UiLogic.clearFollowingTabFields(doorConfig, "intdecor");
+																}
+															}
+														}
+													}
+                                                    <td id="tdIntFinModernCPlate" hidden="@UiLogic.hideFld(doorConfig, "thIntFinModernCPlate")">
+                                                        <select name="dlstIntFinModernCPlate" @bind="IntFinModernCPlate" 
+														                                 class= "@doorConfig.borderColors["INTFINMODERNCPLATE"]" >
+                                                            <option></option>
+                                                            <option>חלק</option>
+                                                            <option>מחורץ</option>
+                                                        </select>
+                                                    </td>
+													@code
+													{
+														protected string _IntFinModernCPlate = string.Empty;
+														protected string IntFinModernCPlate
+														{
+															get
+															{
+																if (doorConfig != null)
+																{
+																	_IntFinModernCPlate = doorConfig.INTFINMODERNCPLATE;
+																}
+																return _IntFinModernCPlate;
+															}
+															set
+															{
+																_IntFinModernCPlate = value;
+																if (doorConfig != null)
+																{
+																	doorConfig.INTFINMODERNCPLATE = _IntFinModernCPlate;
+																	doorConfig.borderColors["INTFINMODERNCPLATE"] = (!string.IsNullOrEmpty(value) ? string.Empty : "redBorder");
+																	UiLogic.clearFollowingTabFields(doorConfig, "intdecor");
+																}
+															}
+														}
+													}
+                                                    <td id="tdIntFinModernSepLine" hidden="@UiLogic.hideFld(doorConfig, "thIntFinModernSepLine")">
+                                                        <select name="dlstIntFinModernSepLine" @bind="IntFinModernSepLine" 
+														                                       class= "@doorConfig.borderColors["INTFINMODERNSEPLINE"]" >
+                                                            
+                                                            onChange="clearFollowingTabs('intdecor')">
+                                                            <option></option>
+                                                            <option>חלק</option>
+                                                            <option>מחורץ</option>
+                                                       </select>
+                                                    </td>
+													@code
+													{
+														protected string _IntFinModernSepLine = string.Empty;
+														protected string IntFinModernSepLine
+														{
+															get
+															{
+																if (doorConfig != null)
+																{
+																	_IntFinModernSepLine = doorConfig.INTFINMODERNSEPLINE;
+																}
+																return _IntFinModernSepLine;
+															}
+															set
+															{
+																_IntFinModernSepLine = value;
+																if (doorConfig != null)
+																{
+																	doorConfig.INTFINMODERNSEPLINE = _IntFinModernSepLine;
+																	doorConfig.borderColors["INTFINMODERNSEPLINE"] = (!string.IsNullOrEmpty(value) ? string.Empty : "redBorder");
+																	UiLogic.clearFollowingTabFields(doorConfig, "intdecor");
+																}
+															}
+														}
+													}
+                                                    <td id="tdIntFinModernPlate" hidden="@UiLogic.hideFld(doorConfig, "thIntFinModernPlate")">
+                                                        <select name="dlstIntFinModernPlate" @bind="IntFinModernPlate" class= "@doorConfig.borderColors["INTFINMODERNPLATE"]" >
+                                                            
+                                                            onChange="clearFollowingTabs('intdecor')">
+                                                            <option></option>
+                                                            <option>חלק</option>
+                                                            <option>מחורץ</option>
+                                                       </select>
+                                                    </td>
+													@code
+													{
+														protected string _IntFinModernPlate = string.Empty;
+														protected string IntFinModernPlate
+														{
+															get
+															{
+																if (doorConfig != null)
+																{
+																	_IntFinModernPlate = doorConfig.INTFINMODERNPLATE;
+																}
+																return _IntFinModernPlate;
+															}
+															set
+															{
+																_IntFinModernPlate = value;
+																if (doorConfig != null)
+																{
+																	doorConfig.INTFINMODERNPLATE = _IntFinModernPlate;
+																	doorConfig.borderColors["INTFINMODERNPLATE"] = (!string.IsNullOrEmpty(value) ? string.Empty : "redBorder");
+																	UiLogic.clearFollowingTabFields(doorConfig, "intdecor");
+																}
+															}
+														}
+													}
+                                                </tr>
+                                            </table>
+                                            <!--end table intDecorL3 -->
+                                       

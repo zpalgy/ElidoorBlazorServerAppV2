@@ -1,0 +1,162 @@
+﻿@page "/Handle"
+
+@inject IJSRuntime Js
+
+@implements IDisposable
+
+@inject NavigationManager Navigator
+
+<style>
+    th, td {
+        padding: 15px;
+        text-align: center;
+    }
+</style>
+
+@code
+{
+    [Parameter]
+    public DoorConfig doorConfig { get; set; }
+
+    //[Parameter]
+    //public bool ExtdecorIsFull { get; set; }
+}
+<h3>Handle</h3>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+		
+        //if (!ExtdecorIsFull)
+        //{
+        //    // navigate back to Movingwing 
+        //    //[TODO]  Navigator.NavigateTo("Movingwing");
+        //}
+
+		//if (!UiLogic.tabPageIsFilled("extdecor", doorConfig))
+  //      {
+  //          Js.InvokeVoidAsync("alert", "יש למלא את כל השדות בלשונית 'דקורציה חוץ' י");
+  //      }
+
+        //var doorConfigJsonV = await ProtectedSessionStore.GetAsync<string> ("doorConfigJson");
+        //if (doorConfigJsonV.Success)
+        //{
+        //    string doorConfigJson2 = doorConfigJsonV.Value;
+        //    if (!string.IsNullOrEmpty(doorConfigJson2))
+        //         doorConfig = Newtonsoft.Json.JsonConvert.DeserializeObject<DoorConfig>(doorConfigJson2);
+        //UiLogic.restoreDoorConfig(ProtectedSessionStore, doorConfig);          
+
+        //Js.InvokeVoidAsync("alert", string.Format("in Extdecor:onInitializedAsync doorConfig.EXTCOLORID = {0}", doorConfig.EXTCOLORID));  //debug
+     }
+    
+    
+    async void IDisposable.Dispose()
+    {
+		 //if (!UiLogic.tabPageIsFilled("intdecor", doorConfig))
+   //     {
+   //         Js.InvokeVoidAsync("alert", "יש למלא את כל השדות בלשונית 'דקורציה פנים' י");
+   //     }
+        //int x = 17;
+        //if (x == 18)
+        //{
+        //    Js.InvokeVoidAsync("alert", "error !");
+        //    //NavigationManager.NavigateTo("Movingwing", true);
+        //}
+    }
+}
+                        <table id="tblHandle">
+                                                <tr>
+                                                    @{ 	bool h = UiLogic.hideFld(doorConfig, "thHandle"); 	}
+			                                        @if (!h)
+			                                        {	
+                                                        <th id="thHandle"  >דגם ידית אומנותית</th>
+                                                    }
+                                                    @{ 	bool hclr = UiLogic.hideFld(doorConfig, "thHandleColorID"); 	}
+			                                        @if (!hclr)
+			                                        {	
+                                                        <th id="thHandleColorID" >צבע ידית אומנותית</th>
+                                                    }
+                                                </tr>
+                                                <tr>
+                                                    @if (!h)
+			                                        {	
+                                                        <td id="tdHandle" >
+                                                            <select name="dlstHandle" @bind="Handle1" class= "@doorConfig.borderColors["HANDLENAME"]" >
+                                                                @if (PrApiCalls.lstHandles != null)
+                                                                 {
+	                                                                @foreach (HANDLE_Class c in PrApiCalls.lstHandles)
+	                                                                {
+		                                                                <option value="@c.HANDLENAME">@c.HANDLEDES</option>
+	                                                                }
+                                                                 }
+                                                            </select>
+                                                        </td>
+                                                    }
+                                                    @code
+                                                    {
+	                                                    protected string _Handle1 = string.Empty;
+	                                                    protected string Handle1
+	                                                    {
+		                                                    get
+		                                                    {
+			                                                    if (doorConfig != null)
+			                                                    {
+				                                                    _Handle1 = doorConfig.HANDLENAME;
+			                                                    }
+			                                                    return _Handle1;
+		                                                    }
+		                                                    set
+		                                                    {
+			                                                    _Handle1 = value;
+			                                                    if (doorConfig != null)
+                                                                {
+				                                                    doorConfig.HANDLENAME = _Handle1;
+                                                                    doorConfig.borderColors["HANDLENAME"] = (!string.IsNullOrEmpty(value) ? string.Empty : "redBorder");
+                                                                    UiLogic.clearFollowingTabFields(doorConfig, "handle");
+                                                                }
+		                                                    }
+	                                                    }
+                                                    }
+
+                                                    @if (!hclr)
+			                                        {	
+                                                        <td id="tdHandleColorID" >
+                                                            <select name="dlstHandleColorID"  @bind="HandleColorID"  class= "@doorConfig.borderColors["HANDLECOLORID"]">
+                                                                @if (PrApiCalls.lstColors != null)
+	                                                            {
+		                                                            @foreach (TRSH_COLOR_Class c in PrApiCalls.lstColors)
+		                                                            {
+			                                                            <option value="@c.TRSH_COLORID">@c.TRSH_COLORDES</option>
+		                                                            }
+	                                                            }
+                                                            </select>
+                                                        </td>
+                                                    }
+                                                    @code
+                                                    {
+	                                                    protected int _HandleColorID = 0;
+	                                                    protected int HandleColorID
+	                                                    {
+		                                                    get
+		                                                    {
+			                                                    if (doorConfig != null)
+			                                                    {
+				                                                    _HandleColorID = doorConfig.HANDLECOLORID;
+			                                                    }
+			                                                    return _HandleColorID;
+		                                                    }
+		                                                    set
+		                                                    {
+			                                                    _HandleColorID = value;
+			                                                    if (doorConfig != null)
+                                                                {
+				                                                    doorConfig.HANDLECOLORID = _HandleColorID;
+                                                                    doorConfig.borderColors["HANDLECOLORID"] = (value != 0  ? string.Empty : "redBorder");
+                                                                    UiLogic.clearFollowingTabFields(doorConfig, "handle");
+                                                                }
+		                                                    }
+	                                                    }
+                                                    }       
+                                                    
+                                                </tr>
+                                            </table>

@@ -1,0 +1,321 @@
+﻿@page "/Hinges"
+
+@inject IJSRuntime Js
+
+@implements IDisposable
+
+@inject NavigationManager Navigator
+
+<style>
+    th, td {
+        padding: 15px;
+        text-align: center;
+    }
+</style>
+
+@code
+{
+    [Parameter]
+    public DoorConfig doorConfig { get; set; }
+
+//    [Parameter]
+//    public bool ExtdecorIsFull { get; set; }
+}
+
+
+@code {
+	@inject NavigationManager NavigationManager;
+
+
+    private bool openMsgBox = false;
+    string errMsg2 = string.Empty;
+    string errMsg3 = "xxxxxxxxxxxxxxxxxx";
+    private string msgCaption = "שגיאה";
+    string msgClass = "modal-body redMessage";
+
+    protected override async Task OnInitializedAsync()
+    {
+		
+        //if (!ExtdecorIsFull)
+        //{
+        //    // navigate back to Movingwing 
+        //    //[TODO]  Navigator.NavigateTo("Movingwing");
+        //}
+
+		//if (!UiLogic.tabPageIsFilled("extdecor", doorConfig))
+  //      {
+  //          Js.InvokeVoidAsync("alert", "יש למלא את כל השדות בלשונית 'דקורציה חוץ' י");
+  //      }
+
+        //var doorConfigJsonV = await ProtectedSessionStore.GetAsync<string> ("doorConfigJson");
+        //if (doorConfigJsonV.Success)
+        //{
+        //    string doorConfigJson2 = doorConfigJsonV.Value;
+        //    if (!string.IsNullOrEmpty(doorConfigJson2))
+        //         doorConfig = Newtonsoft.Json.JsonConvert.DeserializeObject<DoorConfig>(doorConfigJson2);
+        //UiLogic.restoreDoorConfig(ProtectedSessionStore, doorConfig);          
+
+        //Js.InvokeVoidAsync("alert", string.Format("in Extdecor:onInitializedAsync doorConfig.EXTCOLORID = {0}", doorConfig.EXTCOLORID));  //debug
+     }
+    
+    
+    async void IDisposable.Dispose()
+    {
+		 //if (!UiLogic.tabPageIsFilled("intdecor", doorConfig))
+   //     {
+   //         Js.InvokeVoidAsync("alert", "יש למלא את כל השדות בלשונית 'דקורציה פנים' י");
+   //     }
+        //int x = 17;
+        //if (x == 18)
+        //{
+        //    Js.InvokeVoidAsync("alert", "error !");
+        //    //NavigationManager.NavigateTo("Movingwing", true);
+        //}
+    }
+}
+<table id="tblHinges">
+                                                <tr>
+                                                    <th id="thHingesNum" >מספר צירים</th>
+                                                    <th id="thBackPinHeight" >גובה עוקץ אחורי</th>
+                                                    <th id="thHinge1Height" >גובה מרכז ציר 1</th>
+                                                    <th id="thHinge2Height" >גובה מרכז ציר 2</th>
+  													<th id="thHinge3Height" >גובה מרכז ציר 3</th>
+                                                    <th id="thHinge4Height" >גובה מרכז ציר 4</th>
+                                                    <th id="thHinge5Height" >גובה מרכז ציר 5</th>
+                                                </tr>
+                                                <tr>
+                                                    <td id="tdHingesNum" >
+                                                        <input type="number" name="txtHingesNum"  @bind="HingesNum" class= "@doorConfig.borderColors["HINGESNUM"]" />
+                                                    </td>
+                                                    @code
+                                                    {
+														protected int _HingesNum = 0;
+														protected int HingesNum
+														{
+															get
+															{
+																if (doorConfig != null)
+																{
+																	_HingesNum = doorConfig.HINGESNUM;
+																}
+																return _HingesNum;
+															}
+															set
+															{
+																_HingesNum = value;
+																if (doorConfig != null)
+																{
+																	doorConfig.HINGESNUM = _HingesNum;
+																	if (_HingesNum < 5)
+																		doorConfig.HINGE5HEIGHT = 0;
+																	if (_HingesNum < 4)
+																		doorConfig.HINGE4HEIGHT = 0;
+																	if (_HingesNum < 3)
+																		doorConfig.HINGE3HEIGHT = 0;
+																	if (_HingesNum < 2)
+																	{
+																		errMsg3 = "מספר הצירים לא יכול להיות נמוך מ-2";
+																		openMsgBox = true;
+																	}
+																	doorConfig.borderColors["HINGESNUM"] = (value != 0 ? string.Empty : "redBorder");
+																	UiLogic.clearFollowingTabFields(doorConfig, "hinges");
+
+																}
+															}
+														}
+												   }
+                                                    <td id="tdBackPinHeight"  >
+                                                        <input type="number" name="txtBackPinHeight"  @bind="BackPinHeight" 
+														     class= "@doorConfig.borderColors["BACKPINHEIGHT"]" />
+                                                    </td>
+                                                    @code
+                                                    {
+	                                                    protected int _BackPinHeight = 0;
+	                                                    protected int BackPinHeight
+	                                                    {
+		                                                    get
+		                                                    {
+			                                                    if (doorConfig != null)
+			                                                    {
+				                                                    _BackPinHeight = doorConfig.BACKPINHEIGHT;
+			                                                    }
+			                                                    return _BackPinHeight;
+		                                                    }
+		                                                    set
+		                                                    {
+			                                                    _BackPinHeight = value;
+			                                                    if (doorConfig != null)
+																{
+				                                                    doorConfig.BACKPINHEIGHT = _BackPinHeight;
+																	doorConfig.borderColors["BACKPINHEIGHT"] = (value != 0 ? string.Empty : "redBorder");
+																	UiLogic.clearFollowingTabFields(doorConfig, "hinges");
+																}
+		                                                    }
+	                                                    }
+                                                    }
+
+                                                    <td id="tdHinge1Height" class= "@doorConfig.borderColors["HINGE1HEIGHT"]" >
+                                                        <input type="number" name="txtHinge1Height"  @bind="Hinge1Height" 
+														   class= "@doorConfig.borderColors["HINGE1HEIGHT"]" />
+                                                    </td>
+                                                    @code
+                                                    {
+														protected int _Hinge1Height = 0;
+														protected int Hinge1Height
+														{
+															get
+															{
+																if (doorConfig != null)
+																{
+																	_Hinge1Height = doorConfig.HINGE1HEIGHT;
+																}
+																return _Hinge1Height;
+															}
+															set
+															{
+																_Hinge1Height = value;
+																if (doorConfig != null)
+																{
+																	doorConfig.HINGE1HEIGHT = _Hinge1Height;
+																	doorConfig.borderColors["HINGE1HEIGHT"] = (value != 0 ? string.Empty : "redBorder");
+																	UiLogic.clearFollowingTabFields(doorConfig, "hinges");
+																}
+															}
+														}
+													}
+                                                    <td id="tdHinge2Height" >
+                                                        <input type="number" name="txtHinge2Height"  @bind="Hinge2Height" 
+														       class= "@doorConfig.borderColors["HINGE2HEIGHT"]"  />
+                                                    </td>
+                                                    @code
+                                                    {
+	                                                    protected int _Hinge2Height = 0;
+	                                                    protected int Hinge2Height
+	                                                    {
+		                                                    get
+		                                                    {
+			                                                    if (doorConfig != null)
+			                                                    {
+				                                                    _Hinge2Height = doorConfig.HINGE2HEIGHT;
+			                                                    }
+			                                                    return _Hinge2Height;
+		                                                    }
+		                                                    set
+		                                                    {
+			                                                    _Hinge2Height = value;
+			                                                    if (doorConfig != null)
+																{
+				                                                    doorConfig.HINGE2HEIGHT = _Hinge2Height;
+																	doorConfig.borderColors["HINGE2HEIGHT"] = (value != 0 ? string.Empty : "redBorder");
+																	UiLogic.clearFollowingTabFields(doorConfig, "hinges");
+}
+		                                                    }
+	                                                    }
+                                                    }
+
+                                                    <td id="tdHinge3Height" >
+                                                        <input type="number" name="txtHinge3Height"  @bind="Hinge3Height" disabled = "@(doorConfig.HINGESNUM < 3)" 
+														       class= "@doorConfig.borderColors["HINGE3HEIGHT"]" />
+                                                    </td>
+                                                    @code
+													{
+														protected int _Hinge3Height = 0;
+														protected int Hinge3Height
+														{
+															get
+															{
+																if (doorConfig != null)
+																{
+																	_Hinge3Height = doorConfig.HINGE3HEIGHT;
+																}
+																return _Hinge3Height;
+															}
+															set
+															{
+																_Hinge3Height = value;
+																if (doorConfig != null)
+																{
+																	doorConfig.HINGE3HEIGHT = _Hinge3Height;
+																	doorConfig.borderColors["HINGE3HEIGHT"] = (value != 0 ? string.Empty : "redBorder");
+																	UiLogic.clearFollowingTabFields(doorConfig, "hinges");
+																}
+															}
+														}
+													}
+                                                    <td id="tdHinge4Height" >
+                                                        <input type="number" name="txtHinge4Height"  @bind="Hinge4Height"  disabled = "@(doorConfig.HINGESNUM < 4)"
+														              class= "@doorConfig.borderColors["HINGE4HEIGHT"]" />
+                                                    </td>
+													@code
+													{
+														protected int _Hinge4Height = 0;
+														protected int Hinge4Height
+														{
+															get
+															{
+																if (doorConfig != null)
+																{
+																	_Hinge4Height = doorConfig.HINGE4HEIGHT;
+																}
+																return _Hinge4Height;
+															}
+															set
+															{
+																_Hinge4Height = value;
+																if (doorConfig != null)
+																{
+																	doorConfig.HINGE4HEIGHT = _Hinge4Height;
+																	doorConfig.borderColors["HINGE4HEIGHT"] = (value != 0 ? string.Empty : "redBorder");
+																	UiLogic.clearFollowingTabFields(doorConfig, "hinges");
+																}
+															}
+														}
+													}
+                                                    <td id="tdHinge5Height" >
+                                                        <input type="number" name="txtHinge5Height"  @bind="Hinge5Height" disabled = "@(doorConfig.HINGESNUM < 5)"
+																		class= "@doorConfig.borderColors["HINGE5HEIGHT"]" />
+                                                    </td>
+													@code
+													{
+														protected int _Hinge5Height = 0;
+														protected int Hinge5Height
+														{
+															get
+															{
+																if (doorConfig != null)
+																{
+																	_Hinge5Height = doorConfig.HINGE5HEIGHT;
+																}
+																return _Hinge5Height;
+															}
+															set
+															{
+																_Hinge5Height = value;
+																if (doorConfig != null)
+																{
+																	doorConfig.HINGE5HEIGHT= _Hinge5Height;
+																	doorConfig.borderColors["HINGE5HEIGHT"] = (value != 0 ? string.Empty : "redBorder");
+																	UiLogic.clearFollowingTabFields(doorConfig, "hinges");
+																}
+															}
+														}
+													}
+                                                </tr>
+</table>
+@if (openMsgBox)
+{
+	<MsgBox Caption="שגיאה"
+	        Message = "@errMsg3"
+			OnClose="OnDialogClose"
+            MsgTitleCssClass= "modal-title redTitle"
+            ErrMsgCssClass= "modal-body redMessage" >
+	</MsgBox>
+	@code 
+	{
+		private void OnDialogClose()
+		{
+			openMsgBox = false;
+			errMsg2 = string.Empty;
+		}
+	}
+}

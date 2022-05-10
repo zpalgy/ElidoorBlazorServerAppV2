@@ -1,0 +1,685 @@
+﻿@* deployed to prt-test.corp.elidoor.co.il  c$:\inetpub\wwwroot\brazor .
+    In IIS (inetmgr) created a web site : Blazor2 whose physical path is that folder.
+    Bindings : https  port 502.
+    associated the existing certificate with this web site.
+    The application pool name is Blazor2, it's pipiline model is "integrated" and it's identity is ApplicationPoolIdentity
+    Exactly as the default application pool in which https://prt-test.corp.elidoor.co.il/configurator2/wfrmConfigurator2.aspx is running OK from
+    my station.
+
+    When I log into that server I can browse to :     https://prt-test.corp.elidoor.co.il:502/
+    and use the application.
+    *** I can't do that from my machine ! ***
+*@
+
+@*ref: https://stackoverflow.com/questions/56876631/setting-a-startup-page-in-blazor  *@
+
+@page "/"
+
+@using BlazorServerApp1.Pages
+@using BlazorServerApp1.Data
+@using System.Globalization;
+
+@* @page "/Configurator3" *@
+
+@inherits Configurator3Base
+
+@inject IJSRuntime Js
+
+<EditForm Model=@doorConfig>
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <h3>Configurator3</h3>
+
+    @code {
+        //protected bool hideCustDes { get; set; } = false;
+        protected static string errMsg = string.Empty;
+
+        private bool openMsgBox = false;
+        private string errMsg2 = string.Empty;
+        private string msgCaption = "שגיאה";
+        private string msgClass = "modal-body redMessage";
+        private string titleClass = "modal-title redTitle";
+
+        protected List<CUSTOMER_Class>? lstCustomers = PrApiCalls.getCustomers(ref errMsg);
+        protected List<AGENT_Class>? lstAgents = PrApiCalls.getAgents(ref errMsg);
+
+        //BlazorServerApp1.Pages.Configurator3
+        protected bool hideDivDoor = true;
+
+        public bool MovinwingIsFull = false;
+        public bool ExtdecorIsFull = false;
+        public bool IntdecorIsFull = false;
+        CultureInfo hebrew;
+        CultureInfo english;
+
+
+
+        protected override async Task OnInitializedAsync()
+        {
+        doorConfig = new DoorConfig();
+        doorConfig.initBorderColors();
+
+        formDate = DateTime.Now;
+        UiLogic.initPropNames(doorConfig);
+        UiLogic.AppAllDefaults(doorConfig, ref errMsg);
+
+        //await ProtectedSessionStore.SetAsync("doorConfig", doorConfig);
+
+           hebrew = new CultureInfo("he-IL", false);
+           english = new CultureInfo("en-US", false); 
+        }
+
+        public async Task SaveDoorConfig()
+        {
+        if (doorConfig != null)
+            await ProtectedSessionStore.SetAsync("doorConfig", doorConfig);
+        }
+
+        public async Task GetDoorConfig()
+        {
+        var result = await ProtectedSessionStore.GetAsync<DoorConfig>("doorConfig");
+        doorConfig = result.Success ? result.Value : null;
+        }
+
+        public async Task DeleteDoorConfigFromSession()
+        {
+        await ProtectedSessionStore.DeleteAsync("doorConfig");
+        }
+    }
+
+
+
+    <div id="divHeader" dir="rtl" style="border: solid; border-color: black; border-radius: 10px">
+        <table id="tblLine1">
+            <tr>
+                <th>תאריך</th>
+                <th>שם ממלא שאלון</th>
+                <th>אסמכתא</th>
+            </tr>
+            <tr>
+                <td>
+                    <input type="date" name="txtDate" @bind="formDate" />
+    @code {
+                        public DoorConfig? doorConfig; // = new DoorConfig();
+
+        private DateTime _formDate = DateTime.Now;
+        protected DateTime formDate
+        {
+                        get {
+                            if (doorConfig != null)
+                                _formDate = Convert.ToDateTime(doorConfig.FORMDATE);
+
+                            return _formDate; 
+                        }
+                        set
+                        {
+                            _formDate = value;
+                            if (doorConfig == null) 
+                            {
+                                doorConfig = new DoorConfig();
+                                doorConfig.initBorderColors();
+                            }
+                            doorConfig.FORMDATE = Helper.formatDate4Rest(_formDate);
+                        }
+        }
+     }
+                </td>
+                <td>
+                    <input name="txtFormFiller" @bind="formFiller" dir="rtl" 
+                       @onfocus="@( () => formFillerHasFocus() )" 
+                       @onblur="@( () => formFillerLostFocus() )"
+                    />
+     @code {
+                        protected string _formFiller;
+        protected string formFiller
+        {
+                        get {
+                            if (doorConfig != null)
+                                _formFiller = doorConfig.FORMFILLER;
+
+                            return _formFiller; 
+                        }
+                        set
+                        {
+                            _formFiller = value;
+                            if (doorConfig != null)
+                                doorConfig.FORMFILLER = _formFiller;
+                        }
+        }
+        void formFillerHasFocus()
+        {
+           // System.Windows.Forms.InputLanguage.CurrentInputLanguage = System.Windows.Forms.InputLanguage.FromCulture(hebrew);        
+        }
+        void formFillerLostFocus()
+        {
+            //System.Windows.Forms.InputLanguage.CurrentInputLanguage = System.Windows.Forms.InputLanguage.FromCulture(hebrew);    
+        }
+     }
+                </td>
+                <td>
+                    <input name="txtReference" @bind="reference" @ref="txtReference" />
+     @code {
+
+                        private ElementReference txtReference;
+        protected string _reference;
+        protected string reference
+        {
+                        get {
+                            if (doorConfig != null)
+                                _reference = doorConfig.REFERENCE;
+
+                            return _reference; 
+                        }
+                        set
+                        {
+                            _reference = value;
+
+                            if (doorConfig != null)
+                                if (!string.IsNullOrEmpty(PrApiCalls.getReference(_reference, ref errMsg)))
+                                {
+                                //UiLogic.displayErrMsg(lblMsgL1, "אסמכתא עם מספר זה כבר קיימת במערכת");
+                                    //
+                                    //return;
+                                    //Js.InvokeVoidAsync("alert", "אסמכתא עם מספר זה כבר קיימת במערכת");
+                                    msgCaption = "שגיאה";
+                                    msgClass = "modal-body redMessage";
+                                    errMsg2 = "אסמכתא עם מספר זה כבר קיימת במערכת";
+                                    openMsgBox = true;
+                                    txtReference.FocusAsync();
+                                }
+                                else
+                                    doorConfig.REFERENCE = _reference;
+                        }
+        }
+   }
+                </td>
+                <td>
+                    <label id="lblMsgL1" />
+                </td>
+            </tr>
+        </table>
+
+        <table id="tblLine2">
+            <tr>
+                <th>שם משווק</th>
+                <th>שם לקוח קצה</th>
+                <th>כתובת</th>
+                <th>כתובת לאספקה</th>
+            </tr>
+            <tr>
+                <td>
+                    <select name="dlstAgent" @bind="AGENT">
+                        @if (lstAgents != null)
+                        {
+                            @foreach (AGENT_Class a in lstAgents)
+                            {
+                                <option value="@a.AGENT">@a.AGENTNAME</option>
+                            }
+                        }
+                    </select>
+                </td>
+                @code {
+                    private int _AGENT = 0;
+        protected int AGENT
+        {
+                    get {
+                        if (doorConfig != null)
+                            _AGENT = doorConfig.AGENT;
+
+                        return _AGENT; 
+                    }
+                    set
+                    {
+                        _AGENT = value;
+                        if (doorConfig != null)
+                            doorConfig.AGENT = _AGENT;
+                    }
+        }
+     }
+                <td>
+                    <select name="dlstCustDes" @bind="CUST">
+                        @if (lstCustomers != null)
+                        {
+                            @foreach (CUSTOMER_Class c in lstCustomers)
+                            {
+                                <option value="@c.CUST">@c.CUSTDES</option>
+                            }
+                        }
+                    </select>
+                </td>
+                @code {
+                    public bool disableLogo = false;
+        private int _CUST = 0;
+        protected int CUST
+        {
+                    get {
+                        if (doorConfig != null)
+                            _CUST = doorConfig.CUST;
+
+                        return _CUST; 
+                    }
+                    set
+                    {
+                        _CUST = value;
+                        if (doorConfig != null)
+                        {
+                            doorConfig.CUST = _CUST;
+                            // set Address and Logo based on CUST
+                            CUSTOMER_Class cust = PrApiCalls.getCustomer((int)doorConfig.CUST, ref errMsg);
+                            Address = string.Format("{0} {1} {2}", cust.ADDRESS, cust.ADDRESS2, cust.ADDRESS3);
+                            if (!string.IsNullOrEmpty(cust.TRSH_LOGO) && cust.TRSH_LOGO == "Y")
+                            {
+                                disableLogo = true;
+                                doorConfig.LOGO = string.Empty;   //chkbLogo.Checked = false;
+                            }
+                            //
+                        }
+
+                    }
+        }
+     }
+
+                <td>
+                    <input dir="rtl" @bind="Address" />
+                </td>
+     @code {
+        protected string _Address = string.Empty;
+        protected string Address
+        {
+                    get
+                    {
+                        if (doorConfig != null)
+                        {
+                            _Address = doorConfig.ADDRESS;
+                        }
+                        return _Address;
+                    }
+                    set
+                    {
+                        _Address = value;
+                        if (doorConfig != null)
+                            doorConfig.ADDRESS = _Address;
+                    }
+        }
+     }
+                <td>
+                    <input dir="rtl" @bind="ShipAddress" size="80" />
+                </td>
+    @code {
+        protected string _ShipAddress = string.Empty;
+        protected string ShipAddress
+        {
+                    get
+                    {
+                        if (doorConfig != null)
+                        {
+                            _ShipAddress = doorConfig.SHIPADDRESS;
+                        }
+                        return _ShipAddress;
+                    }
+                    set
+                    {
+                        _ShipAddress = value;
+                        if (doorConfig != null)
+                            doorConfig.SHIPADDRESS = _ShipAddress;
+                    }
+        }
+    }
+            </tr>
+        </table>
+        <table id="tblProducts">
+            <tr>
+                <td>
+                    <button name="btnDoor" @onclick="btnDoorClicked">דלת</button>
+    @code
+    {
+        private void btnDoorClicked()
+        {
+                        hideDivDoor = false;
+        }
+    }
+                </td>
+                <td>
+                    <button name="btnLintel">משקוף</button>
+                </td>
+                <td>
+                    <button name="btnCover">חיפוי</button>
+                </td>
+                <td>
+                    <button name="btnSideUnit">יחידת צד</button>
+                </td>
+                <td>
+                    <button name="btnECabinet">ארון חשמל</button>
+                </td>
+                <td>
+                    <button name="btnShelves">מדפים</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <!--end of divHeader -->
+
+    <div id="divDoor" dir="rtl" hidden="@hideDivDoor">
+
+        <div id="divDoorTitle" dir="rtl" style="border: solid; border-color: black; border-radius: 10px">
+            <table id="tblDoorTitle">
+                <tr>
+                    <th id="thWingsNum">מיפתח</th>
+                    <th id="thOpenMode">צורת פתיחה</th>
+                    <th id="thComplient">דלת תואם אלידור</th>
+                    <th id="thPARTNAME">דגם</th>
+                    <th id="thFamily">סידרה</th>
+                </tr>
+                <tr>
+                    <td>
+                        <select name="dlstWingsNum" @bind="WingsNum">
+                            <option>בחר סוג מיפתח</option>
+                            <option>כנף</option>
+                            <option>כנף וחצי</option>
+                            <option>דו כנפי</option>
+                        </select>
+                    </td>
+    @code
+    {
+        //protected bool disableStaticWing = false;
+        protected string _WingsNum = string.Empty;
+        protected string WingsNum
+        {
+                        get
+                        {
+                            if (doorConfig != null)
+                            {
+                                _WingsNum = doorConfig.WINGSNUM;
+                            }
+                            return _WingsNum;
+                        }
+                        set
+                        {
+                            _WingsNum = value;
+                            if (doorConfig != null)
+                                doorConfig.WINGSNUM = _WingsNum;
+
+                            //disableStaticWing =  (_WingsNum == "כנף");
+                        }
+        }
+
+     }
+                    <td>
+                        <select name="dlstOpenMode">
+                            <option>בחר צורת פתיחה</option>
+                            <option>החוצה</option>
+                            <option>פנימה</option>
+                        </select>
+                    </td>
+
+                    <td>
+                        <input type="checkbox" name="chkbComplient" @bind="Complient" />
+                    </td>
+    @code
+    {
+        protected bool _Complient = false;
+        protected bool Complient
+        {
+                        get
+                        {
+                            if (doorConfig != null)
+                            {
+                                _Complient = (doorConfig.COMPLIENTDOOR == "Y");
+                            }
+                            return _Complient;
+                        }
+                        set
+                        {
+                            _Complient = value;
+                            if (doorConfig != null)
+                                doorConfig.COMPLIENTDOOR = (_Complient ? "Y" : "");
+                        }
+        }
+
+     }
+                    <td>
+                        <select name="dlstPARTNAME" @bind="PARTNAME">
+                            @if (PrApiCalls.lstParts != null)
+                            {
+                                @foreach (PART_Class p in PrApiCalls.lstParts)
+                                {
+                                    <option value="@p.PARTNAME">@p.PARTDES</option>
+                                }
+                            }
+                        </select>
+                    </td>
+    @code
+                    {
+                        protected string _PARTNAME = string.Empty;
+        protected string PARTNAME
+        {
+                        get
+                        {
+                            if (doorConfig != null)
+                            {
+                                _PARTNAME = doorConfig.PARTNAME;
+                                if (string.IsNullOrEmpty(_PARTNAME))
+                                    _FAMILYDES = string.Empty;
+                            }
+                            return _PARTNAME;
+                        }
+                        set
+                        {
+                            _PARTNAME = value;
+                            if (doorConfig != null)
+                            {
+                                doorConfig.PARTNAME = _PARTNAME;
+                                PART_Class part = PrApiCalls.getPart(doorConfig.PARTNAME, ref errMsg);
+                                //FamilyOfPart_Class familyOfPart = PrApiCalls.getFamilyOfPart(doorConfig.PARTNAME, ref errMsg);
+                                FAMILYDES = part.FAMILYDES;         //familyOfPart.FAMILYDES;
+                                doorConfig.FAMILYNAME = part.FAMILYNAME;  //[NonSerialized]
+                                //doorConfig.FAMILY = PrApiCalls.getFAMILY(part.FAMILYNAME, ref errMsg);
+                                doorConfig.meaged = part.MPARTNAME;  //PrApiCalls.getMeagedOfPart(PARTNAME, ref errMsg);
+                                doorConfig.TRSH_DOOR_HWCATCODE = part.TRSH_DOOR_HWCATCODE;    //PrApiCalls.getDoorHwCatCode(doorConfig.PARTNAME, ref errMsg);
+                                UiLogic.applyPartDefaults(doorConfig);
+                            }
+                        }
+
+        }
+    }
+                    <td>
+                        <input name="txtFAMILY" disabled=@true @bind="FAMILYDES" />
+                    </td>
+    @code
+    {
+        protected string _FAMILYDES;
+        protected string FAMILYDES
+        {
+                        get
+                        {
+                            return _FAMILYDES;
+                        }
+                        set
+                        {
+                            _FAMILYDES = value;
+                        }
+        }
+
+    }
+                </tr>
+            </table>
+        </div>
+        <!-- end divDoorTitle -->
+
+
+        <br />
+        <br />
+        <br />
+
+    @code {
+        // tab control here -
+        // tab content pages in separate *.razor files
+        // ref: https://blazor-university.com/templating-components-with-renderfragements/creating-a-tabcontrol/
+    }
+
+        <div id="divTabControl">
+            <TabControl doorConfig="doorConfig">
+                <TabPage Text="כנף נעה" TabName="movingwing">
+                    <div id="divMovingWing" class="myDiv">
+                        <Movingwing doorConfig="@doorConfig" disableLogo="@disableLogo"></Movingwing>
+                    </div>
+                </TabPage>
+                <TabPage Text="פרטי דקורציה חוץ" TabName="extdecor">
+                    <div id="divExtDecor" class="myDiv">
+                        <Extdecor doorConfig="@doorConfig" MovingwingIsFull="@MovinwingIsFull" />
+                    </div>
+                </TabPage>
+                <TabPage Text="פרטי דקורציה פנים" TabName="intdecor">
+                    <div id="divIntDecor" class="myDiv">
+                       <Intdecor doorConfig="@doorConfig" ExtdecorIsFull="@ExtdecorIsFull" />
+                    </div>
+                </TabPage>
+                <TabPage Text="כנף קבועה" TabName="staticwing">
+                    <div id="divStaticWing" class="myDiv">
+                        <Staticwing doorConfig="@doorConfig" />
+                    </div>
+                </TabPage>
+                <TabPage Text="פרטי צירים" TabName="hinges">
+                    <div id="divHinges" class="myDiv">
+                        <Hinges doorConfig="@doorConfig" />
+                    </div>
+                </TabPage>
+                <TabPage Text="ידית אומנותית" TabName="handle">
+                    <div id="divHandles" class="myDiv">
+                        <Handle doorConfig="@doorConfig" />
+                    </div>
+                </TabPage>
+                <TabPage Text="נילווים" TabName="accessories" >
+                    <div id="divAccessories" class="myDiv">
+                        <Accessories doorConfig="@doorConfig" />
+                    </div>
+                </TabPage>
+            </TabControl>
+        </div>
+        <!-- end divTabControl -->
+
+    </div>
+    <!-- end divDoor -->
+    <div id="divCommentsAndSave" dir="rtl" style="padding-top: 30px;">
+        <table id="tblComments">
+            <tr>
+                <th id="thComments" style="text-align: right">הערות</th>
+            </tr>
+            <tr>
+                <td>
+                    <input name="txtComments" size="120"   @bind="Comments"  AutoCompleteType="Disabled" />
+                </td>
+                @code
+                {
+	                protected string _Comments = string.Empty;
+	                protected string Comments
+	                {
+		                get
+		                {
+			                if (doorConfig != null)
+			                {
+				                _Comments = doorConfig.COMMENTS;
+			                }
+			                return _Comments;
+		                }
+		                set
+		                {
+			                _Comments = value;
+			                if (doorConfig != null)
+				                doorConfig.COMMENTS = _Comments;
+		                }
+	                }
+                }
+            </tr>
+        </table>
+        <p />
+        <br />
+        <br />
+        <table>
+            <tr>
+                <td>
+                    <button name="btnSave" @onclick="btnSave_Click">שמירה בפריוריטי</button>
+                </td>
+    @code {
+                    private void btnSave_Click()
+        {
+                    string prevTab = "accessories";
+                    string prevText = "נילווים";
+                    if (!UiLogic.tabPageIsFilled(prevTab, doorConfig))
+                    {
+                        errMsg2 = string.Format("יש למלא את כל השדות בלשונית '{0}'  י", prevText);
+                        // Js.InvokeVoidAsync("alert", errMsg);
+                        openMsgBox = true;
+                        return;
+                    }
+
+                    doorConfig.FAMILY = PrApiCalls.getFAMILY(doorConfig.FAMILYNAME, ref errMsg);
+                    var response = (PrApiCalls.SendToPriority("TRSH_DOORCONFIG", doorConfig, ref errMsg)).StatusCode;
+
+                    if (response != System.Net.HttpStatusCode.Created)
+                    {
+                    //myMessageBox.Show(Page, errMsg);
+                        //UiLogic.displayErrMsg(lblMsg, "Api call failed : " + errMsg);
+                        //Js.InvokeVoidAsync("alert", errMsg);
+                        msgCaption = "שגיאה";
+                        errMsg2 = errMsg;
+                        msgClass = "modal-body redMessage";
+                        openMsgBox = true;
+
+                        myLogger.log.Info("Api call failed : " + errMsg);
+                    }
+                    else
+                    {
+                        string lastREFERENCE = PrApiCalls.getLastREFERENCE(ref errMsg);
+                        errMsg2 = string.Format("השאלון {0} נשמר בהצלחה, השאלון האחרון במערכת הוא {1}   י", doorConfig.REFERENCE, lastREFERENCE);
+                        //Js.InvokeVoidAsync("alert", errMsg2);
+                        msgCaption = "הודעה";
+                        titleClass = "modal-title greenTitle";
+                        msgClass = "modal-body greenMessage";
+                         openMsgBox = true;
+
+                        //UiLogic.ClearAllControls();
+                        //doorConfig = new DoorConfig();
+                    }
+        }
+    }
+                <td>
+                    <button name="btnClear" @onclick="btnClear_Click">ניקוי טופס</button>
+                </td>
+    @code {
+                    private void btnClear_Click()
+        {
+            UiLogic.clearDoorConfig(doorConfig);            
+        }
+    }
+            </tr>
+        </table>
+
+    </div>
+    <!-- end divCommentsAndSave -->
+    <div id="divBuildTime">
+        <p style="float:left">@buildTime</p>
+    @code {
+            protected string buildTime = string.Format("Build Date : {0}", Helper.formatDateTime(Helper.getBuildTime()));
+    }
+    </div>
+    <!-- end divBuildTime -->
+</EditForm>
+
+@if (openMsgBox)
+{
+	<MsgBox Caption="@msgCaption"
+	        Message = "@errMsg2"
+			OnClose="OnDialogClose"
+            MsgTitleCssClass= "@titleClass"
+            ErrMsgCssClass= "@msgClass" >
+	</MsgBox>
+	@code 
+    {
+	    private void OnDialogClose()
+	    {
+		    openMsgBox = false;
+		    errMsg2 = string.Empty;
+	    }
+}
+}

@@ -1,0 +1,123 @@
+﻿@inject IJSRuntime Js
+
+<CascadingValue Value="this">
+	<div class="btn-group" role="group">
+		@foreach (TabPage tabPage in Pages)
+		{
+			<button type="button"
+					class="btn @GetButtonClass(tabPage)"
+					@onclick=@( () => ActivatePage(tabPage) )
+					disabled="@disableTab(@tabPage.Text, doorConfig.WINGSNUM)">
+				@tabPage.Text
+			</button>
+		}
+		@{
+			UiLogic.tabNames = lstTabNames.ToArray();
+			UiLogic.tabTexts = lstTabTexts.ToArray();
+		}
+	</div>
+	@ChildContent
+</CascadingValue>
+
+@code {
+	// Next line is needed so we are able to add <TabPage> components inside
+	[Parameter]
+	public RenderFragment ChildContent { get; set; }
+
+	[Parameter]
+	public DoorConfig doorConfig { get; set; }
+
+	public TabPage ActivePage { get; set; }
+	List<TabPage> Pages = new List<TabPage>();
+	List<string> lstTabTexts = new List<string>();
+	List<string> lstTabNames = new List<string>();
+
+	//
+	private bool openMsgBox = false;
+	string errMsg = string.Empty;
+	//
+
+	internal void AddPage(TabPage tabPage)
+	{
+		Pages.Add(tabPage);
+		lstTabTexts.Add(tabPage.Text);
+		lstTabNames.Add(tabPage.TabName);
+
+		if (Pages.Count == 1 && !string.IsNullOrEmpty(doorConfig.PARTNAME))
+		{
+			ActivePage = tabPage;
+		}
+		StateHasChanged();
+	}
+
+	string GetButtonClass(TabPage page)
+	{
+		return page == ActivePage ? "btn-primary" : "btn-secondary";
+	}
+
+	void ActivatePage(TabPage page )
+	{
+		if (doorConfig.CUST != 0 && !string.IsNullOrEmpty(doorConfig.PARTNAME))
+		{
+			int t = Array.IndexOf(UiLogic.tabNames, page.TabName);
+			string prevTab = (t > 0 ? UiLogic.tabNames[t - 1] : string.Empty);
+			string prevText = (t > 0 ? UiLogic.tabTexts[t - 1] : string.Empty); 
+			if (prevTab.ToLower() == "staticwing" && disableTab(prevText, doorConfig.WINGSNUM))
+			{
+				prevTab = UiLogic.tabNames[t - 2];
+				prevText = UiLogic.tabTexts[t - 2];
+			}
+			if (t == 0)
+			{
+				ActivePage = page;
+			}
+			else
+			{
+				if (UiLogic.tabPageIsFilled(prevTab, doorConfig))
+					ActivePage = page;
+				else
+				{
+					//string prevTabText = UiLogic.tabTexts[t - 1];
+					errMsg = string.Format("יש למלא את כל השדות בלשונית '{0}'  י", prevText);
+					// Js.InvokeVoidAsync("alert", errMsg);
+					openMsgBox = true;
+				}
+			}
+		}
+		else
+		{
+			errMsg = string.Empty;
+			if (doorConfig.CUST == null || doorConfig.CUST == 0)
+				errMsg += "חובה לציין לקוח";
+			if (string.IsNullOrEmpty(doorConfig.PARTNAME))
+				errMsg += " חובה לציין דגם , ";
+
+			//Js.InvokeVoidAsync("alert", errMsg);
+			openMsgBox = true;
+
+		}
+		//debug 
+		//ActivePage = page;  //debug temporarily show the page !!!
+	}
+	public bool disableTab(string tabPageText, string wingsNum)
+	{
+		return (tabPageText == "כנף קבועה" && wingsNum == "כנף");
+	}
+}
+@if (openMsgBox)
+{
+	<MsgBox Caption="שגיאה"
+	        Message = "@errMsg"
+			OnClose="OnDialogClose"
+			MsgTitleCssClass= "modal-title redTitle"
+			ErrMsgCssClass= "modal-body redMessage" >
+	</MsgBox>
+	@code 
+	{
+		private void OnDialogClose()
+		{
+			openMsgBox = false;
+			errMsg = string.Empty;
+		}
+	}
+}

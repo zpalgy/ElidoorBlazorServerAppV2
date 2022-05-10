@@ -1,0 +1,357 @@
+﻿@page "/Staticwing"
+
+@inject IJSRuntime Js
+
+@implements IDisposable
+
+@inject NavigationManager Navigator
+
+<style>
+    th, td {
+        padding: 15px;
+        text-align: center;
+    }
+</style>
+
+@code
+{
+    [Parameter]
+    public DoorConfig doorConfig { get; set; }
+
+    //[Parameter]
+    //public bool ExtdecorIsFull { get; set; }
+}
+<h3>Staticwing</h3>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+		
+        //if (!ExtdecorIsFull)
+        //{
+        //    // navigate back to Movingwing 
+        //    //[TODO]  Navigator.NavigateTo("Movingwing");
+        //}
+
+		//if (!UiLogic.tabPageIsFilled("intdecor", doorConfig))
+  //      {
+  //          Js.InvokeVoidAsync("alert", "יש למלא את כל השדות בלשונית 'דקורציה פנים' י");
+  //      }
+
+        //var doorConfigJsonV = await ProtectedSessionStore.GetAsync<string> ("doorConfigJson");
+        //if (doorConfigJsonV.Success)
+        //{
+        //    string doorConfigJson2 = doorConfigJsonV.Value;
+        //    if (!string.IsNullOrEmpty(doorConfigJson2))
+        //         doorConfig = Newtonsoft.Json.JsonConvert.DeserializeObject<DoorConfig>(doorConfigJson2);
+        //UiLogic.restoreDoorConfig(ProtectedSessionStore, doorConfig);          
+
+        //Js.InvokeVoidAsync("alert", string.Format("in Extdecor:onInitializedAsync doorConfig.EXTCOLORID = {0}", doorConfig.EXTCOLORID));  //debug
+     }
+    
+    
+    async void IDisposable.Dispose()
+    {
+		 //if (!UiLogic.tabPageIsFilled("intdecor", doorConfig))
+   //     {
+   //         Js.InvokeVoidAsync("alert", "יש למלא את כל השדות בלשונית 'דקורציה פנים' י");
+   //     }
+        //int x = 17;
+        //if (x == 18)
+        //{
+        //    Js.InvokeVoidAsync("alert", "error !");
+        //    //NavigationManager.NavigateTo("Movingwing", true);
+        //}
+    }
+}
+<table id="staticWingL1">
+        <tr>
+            <th id="thOpenDirection" @hidden="@UiLogic.hideFld(doorConfig, "thOpenDirection")">כיוון</th>
+            <th id="thCentralColClrID" @hidden="@UiLogic.hideFld(doorConfig, "thCentralColClrID")">גוון עמוד מרכזי</th>
+            <th id="thShalvaniaClrID" @hidden="@UiLogic.hideFld(doorConfig, "thShalvaniaClrID")">גוון שלווניה</th>
+            <th id="thCylinder4HalfWing" @hidden="@UiLogic.hideFld(doorConfig, "thCylinder4HalfWing")">צילינדר בחצי כנף</th>
+            <th id="thHW4ExtraWing" @hidden="@UiLogic.hideFld(doorConfig, "thHW4ExtraWing")">פרזול לכנף נוספת</th>
+            <th id="thDesignedExtraWing" @hidden="@UiLogic.hideFld(doorConfig, "thDesignedExtraWing")">כנף נוספת מעוצבת</th>
+            <th id="thDesignedWindowedWing" @hidden="@UiLogic.hideFld(doorConfig, "thDesignedWindowedWing")">כנף מעוצבת עם חלון</th>
+        </tr>
+        <tr>
+            <!--  td id="tdOpenDirection" @hidden="@UiLogic.hideFld(doorConfig, "thOpenDirection")" -->
+		    <td id="tdOpenDirection" >
+                <input name="txtOpenDirection" disabled=@true @bind="OpenDirection"   /> 
+            </td>
+            @code
+            {
+	            protected string _OpenDirection = string.Empty;
+	            protected string OpenDirection
+	            {
+		            get
+		            {
+			            if (doorConfig != null)
+			            {
+				            _OpenDirection = (doorConfig.OPENSIDE == "ימין" ? "שמאל" : "ימין");
+			            }
+			            return _OpenDirection;
+		            }
+		            set
+		            {
+			            _OpenDirection = value;
+		            }
+	            }
+            }
+            <td id="tdCentralColClrID" @hidden="@UiLogic.hideFld(doorConfig, "thCentralColClrID")">
+                <select name="dlstCentralColClrID" @bind="CentralColClrID" >
+                    @if (PrApiCalls.lstColors != null)
+	                {
+		                @foreach (TRSH_COLOR_Class c in PrApiCalls.lstColors)
+		                {
+			                <option value="@c.TRSH_COLORID">@c.TRSH_COLORDES</option>
+		                }
+	                }
+                </select>
+            </td>
+            @code
+            {
+	            protected int _CentralColClrID = 0;
+	            protected int CentralColClrID
+	            {
+		            get
+		            {
+			            if (doorConfig != null)
+			            {
+				            _CentralColClrID = doorConfig.CENTRALCOLCLRID;
+			            }
+			            return _CentralColClrID;
+		            }
+		            set
+		            {
+			            _CentralColClrID = value;
+			            if (doorConfig != null)
+				            doorConfig.CENTRALCOLCLRID = _CentralColClrID;
+		            }
+	            }
+            }
+
+            <td id="tdShalvaniaClrID" @hidden="@UiLogic.hideFld(doorConfig, "thShalvaniaClrID")">
+                <select name="dlstShalvaniaClrID" @bind="ShalvaniaClrID" >
+                    @if (PrApiCalls.lstColors != null)
+	                {
+		                @foreach (TRSH_COLOR_Class c in PrApiCalls.lstColors)
+		                {
+			                <option value="@c.TRSH_COLORID">@c.TRSH_COLORDES</option>
+		                }
+	                }
+                </select>
+            </td>
+            @code
+            {
+	            protected int _ShalvaniaClrID = 0;
+	            protected int ShalvaniaClrID
+	            {
+		            get
+		            {
+			            if (doorConfig != null)
+			            {
+				            _ShalvaniaClrID = doorConfig.SHALVANIACLRID;
+			            }
+			            return _ShalvaniaClrID;
+		            }
+		            set
+		            {
+			            _ShalvaniaClrID = value;
+			            if (doorConfig != null)
+				            doorConfig.SHALVANIACLRID = _ShalvaniaClrID;
+		            }
+	            }
+            }
+
+            <td id="tdCylinder4HalfWing" @hidden="@UiLogic.hideFld(doorConfig, "thCylinder4HalfWing")">
+                <select name="dlstCylinder4HalfWing" @bind="Cylinder4HalfWing" >
+                    <option>לא</option>
+                    <option>כן</option>
+                    <option>חצי</option>
+                </select>
+            </td>
+            @code
+            {
+	            protected string _Cylinder4HalfWing = string.Empty;
+	            protected string Cylinder4HalfWing
+	            {
+		            get
+		            {
+			            if (doorConfig != null)
+			            {
+				            _Cylinder4HalfWing = doorConfig.CYLINDER4HALFWING;
+			            }
+			            return _Cylinder4HalfWing;
+		            }
+		            set
+		            {
+			            _Cylinder4HalfWing = value;
+			            if (doorConfig != null)
+				            doorConfig.CYLINDER4HALFWING = _Cylinder4HalfWing;
+		            }
+	            }
+            }
+            <td id="tdHW4ExtraWing" @hidden="@UiLogic.hideFld(doorConfig, "thHW4ExtraWing")">
+                <input type="checkbox" name="chkbHW4ExtraWing" @bind="HW4ExtraWing" />
+            </td>
+            @code
+            {
+	            protected bool _HW4ExtraWing = false;
+	            protected bool HW4ExtraWing
+	            {
+		            get
+		            {
+			            if (doorConfig != null)
+			            {
+				            _HW4ExtraWing = (doorConfig.HW4EXTRAWING == "Y");
+			            }
+			            return _HW4ExtraWing;
+		            }
+		            set
+		            {
+			            _HW4ExtraWing = value;
+			            if (doorConfig != null)
+				            doorConfig.HW4EXTRAWING = (_HW4ExtraWing ? "Y" : "");
+		            }
+	            }
+            }
+            <td id="tdDesignedExtraWing" @hidden="@UiLogic.hideFld(doorConfig, "thDesignedExtraWing")">
+                <input type="checkbox" name="chkbDesignedExtraWing" @bind="DesignedExtraWing" />
+            </td>
+            @code
+			{
+				protected bool _DesignedExtraWing = false;
+				protected bool DesignedExtraWing
+				{
+					get
+					{
+						if (doorConfig != null)
+						{
+							_DesignedExtraWing = (doorConfig.DESIGNEDEXTRAWING == "Y");
+						}
+						return _DesignedExtraWing;
+					}
+					set
+					{
+						_DesignedExtraWing = value;
+						if (doorConfig != null)
+							doorConfig.DESIGNEDEXTRAWING = (_DesignedExtraWing ? "Y" : "");
+					}
+				}
+			}
+
+            <td id="tdDesignedWindowedWing" @hidden="@UiLogic.hideFld(doorConfig, "thDesignedWindowedWing")">
+                <input type="checkbox" name="chkbDesignedWindowedWing" @bind="DesignedWindowedWing" />
+            </td>
+			@code
+			{
+				protected bool _DesignedWindowedWing = false;
+				protected bool DesignedWindowedWing
+				{
+					get
+					{
+						if (doorConfig != null)
+						{
+							_DesignedWindowedWing = (doorConfig.DESIGNEDWINDOWEDWING == "Y");
+						}
+						return _DesignedWindowedWing;
+					}
+					set
+					{
+						_DesignedWindowedWing = value;
+						if (doorConfig != null)
+							doorConfig.DESIGNEDWINDOWEDWING = (_DesignedWindowedWing ? "Y" : "");
+					}
+				}
+			}
+        </tr>
+    </table>
+    <!--end table staticWingL1 -->
+    <br />
+    <table id="staticWingL2">
+        <tr>
+            <th id="thExtraWingWidth" @hidden="@UiLogic.hideFld(doorConfig, "thExtraWingWidth")">רוחב כנף נוספת</th>
+            <th id="thCentralColWidth" @hidden="@UiLogic.hideFld(doorConfig, "thCentralColWidth")">רוחב עמוד מרכזי</th>
+            <th id="thRafafaOnStaticWing" @hidden="@UiLogic.hideFld(doorConfig, "thRafafaOnStaticWing")">תוספת רפפה עשן\פתח איוורור בכנף הקבועה</th>
+        </tr>
+        <tr>
+            <td id="tdExtraWingWidth" @hidden="@UiLogic.hideFld(doorConfig, "thExtraWingWidth")">
+                <input type="number"  name="txtExtraWingWidth" @bind="ExtraWingWidth" />
+            </td>
+			@code
+			{
+				protected int _ExtraWingWidth = 0;
+				protected int ExtraWingWidth
+				{
+					get
+					{
+						if (doorConfig != null)
+						{
+							_ExtraWingWidth = doorConfig.EXTRAWINGWIDTH;
+						}
+						return _ExtraWingWidth;
+					}
+					set
+					{
+						_ExtraWingWidth = value;
+						if (doorConfig != null)
+							doorConfig.EXTRAWINGWIDTH = _ExtraWingWidth;
+					}
+				}
+			}
+
+            <td id="tdCentralColWidth" @hidden="@UiLogic.hideFld(doorConfig, "thCentralColWidth")">
+                <select name="dlstCentralColWidth" @bind="CentralColWidth" >
+                    <option>40</option>
+                    <option>30</option>
+                </select>
+            </td>
+			@code
+			{
+				protected int _CentralColWidth = 0;
+				protected int CentralColWidth
+				{
+					get
+					{
+						if (doorConfig != null)
+						{
+							_CentralColWidth = doorConfig.CENTRALCOLWIDTH;
+						}
+						return _CentralColWidth;
+					}
+					set
+					{
+						_CentralColWidth = value;
+						if (doorConfig != null)
+							doorConfig.CENTRALCOLWIDTH = _CentralColWidth;
+					}
+				}
+			}
+            <td id="tdRafafaOnStaticWing" @hidden="@UiLogic.hideFld(doorConfig, "thRafafaOnStaticWing")">
+                <input type="checkbox" name="chkbRafafaOnStaticWing" @bind="RafafaOnStaticWing" />
+            </td>
+			@code
+			{
+				protected bool _RafafaOnStaticWing = false;
+				protected bool RafafaOnStaticWing
+				{
+					get
+					{
+						if (doorConfig != null)
+						{
+							_RafafaOnStaticWing = (doorConfig.RAFAFAONSTATICWING == "Y");
+						}
+						return _RafafaOnStaticWing;
+					}
+					set
+					{
+						_RafafaOnStaticWing = value;
+						if (doorConfig != null)
+							doorConfig.RAFAFAONSTATICWING = (_RafafaOnStaticWing ? "Y" : "");
+					}
+				}
+			}
+        </tr>
+    </table>
+    <!-- end table staticWingL2 -->

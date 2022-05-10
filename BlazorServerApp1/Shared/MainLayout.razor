@@ -1,0 +1,29 @@
+﻿@inherits LayoutComponentBase
+
+<PageTitle>BlazorServerApp1</PageTitle>
+
+@* ref: https://stackoverflow.com/questions/58235005/blazor-template-with-menu-across-the-top
+
+The sidebar in Blazor isn't something special. If you check MainLayout.razor you'll see a reference to a NavMenu component with the sidebar class :
+
+<div class="sidebar">
+    <NavMenu />
+</div>
+   So I added style="display:none" to the 1'st div that wraps NavMenu and thus the side bar is not shown on the page.
+*@
+
+<div class="page" dir="rtl">
+    <div class="sidebar" style="display:none">
+        <NavMenu />
+    </div>
+
+    <main>
+        <div class="top-row px-4">
+            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>

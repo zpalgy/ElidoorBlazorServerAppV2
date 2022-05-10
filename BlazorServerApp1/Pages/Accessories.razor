@@ -1,0 +1,314 @@
+﻿@page "/Accessories"
+
+@inject IJSRuntime Js
+
+@implements IDisposable
+
+@inject NavigationManager Navigator
+
+<style>
+    th, td {
+        padding: 15px;
+        text-align: center;
+    }
+</style>
+
+@code
+{
+    [Parameter]
+    public DoorConfig doorConfig { get; set; }
+
+    //[Parameter]
+    //public bool ExtdecorIsFull { get; set; }
+}
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+		
+        //if (!ExtdecorIsFull)
+        //{
+        //    // navigate back to Movingwing 
+        //    //[TODO]  Navigator.NavigateTo("Movingwing");
+        //}
+
+		//if (!UiLogic.tabPageIsFilled("extdecor", doorConfig))
+  //      {
+  //          Js.InvokeVoidAsync("alert", "יש למלא את כל השדות בלשונית 'דקורציה חוץ' י");
+  //      }
+
+        //var doorConfigJsonV = await ProtectedSessionStore.GetAsync<string> ("doorConfigJson");
+        //if (doorConfigJsonV.Success)
+        //{
+        //    string doorConfigJson2 = doorConfigJsonV.Value;
+        //    if (!string.IsNullOrEmpty(doorConfigJson2))
+        //         doorConfig = Newtonsoft.Json.JsonConvert.DeserializeObject<DoorConfig>(doorConfigJson2);
+        //UiLogic.restoreDoorConfig(ProtectedSessionStore, doorConfig);          
+
+        //Js.InvokeVoidAsync("alert", string.Format("in Extdecor:onInitializedAsync doorConfig.EXTCOLORID = {0}", doorConfig.EXTCOLORID));  //debug
+     }
+    
+    
+    async void IDisposable.Dispose()
+    {
+		 //if (!UiLogic.tabPageIsFilled("intdecor", doorConfig))
+   //     {
+   //         Js.InvokeVoidAsync("alert", "יש למלא את כל השדות בלשונית 'דקורציה פנים' י");
+   //     }
+        //int x = 17;
+        //if (x == 18)
+        //{
+        //    Js.InvokeVoidAsync("alert", "error !");
+        //    //NavigationManager.NavigateTo("Movingwing", true);
+        //}
+    }
+}
+                                            <table id="tblAccessoriesL1">
+                                                <tr>
+                                                    @{bool rl = UiLogic.hideFld(doorConfig, "thRafafaLocation");}
+                                                    @if (!rl) 
+                                                    {
+                                                        <th id="thRafafaLocation" >מיקום רפפה עשן\פתח איוורור</th>
+                                                    }
+
+                                                    @{bool sl = UiLogic.hideFld(doorConfig, "thSafeLock");}
+                                                    @if (!sl)
+                                                    {
+                                                        <th id="thSafeLock" >מנעול כספת</th>
+                                                    }
+
+                                                    @{bool wcb = UiLogic.hideFld(doorConfig, "thWetColorBox");}
+                                                    @if (!wcb)
+                                                    {
+                                                        <th id="thWetColorBox" >קופסאת צבע רטוב</th>
+                                                    }
+
+                                                    @{bool csp = UiLogic.hideFld(doorConfig, "thColorSpray");}
+                                                    @if (!csp)
+                                                    {
+                                                        <th id="thColorSpray" >תרסיס צבע</th>
+                                                    }
+
+                                                     @{bool clsp = UiLogic.hideFld(doorConfig, "thCleaningSpray");}
+                                                     @if (!clsp)
+                                                    {
+                                                        <th id="thCleaningSpray" >תרסיס ניקוי</th>
+                                                    }
+
+                                                     @{bool cr = UiLogic.hideFld(doorConfig, "thCore");}
+                                                     @if (!cr)
+                                                     {
+                                                        <th id="thCore" >ליבה</th>
+                                                     }
+
+                                                    @{bool mz = UiLogic.hideFld(doorConfig, "thMezuza");}
+                                                    @if (!mz)
+                                                    {  
+                                                        <th id="thMezuza" >מזוזה</th>
+                                                    }
+                                                </tr>
+
+                                                <tr>
+                                                @if (!rl)
+                                                {
+                                                    <td id="tdRafafaLocation" >
+                                                        <select name="dlstRafafaLocation" @bind="RafafaLocation" class= "@doorConfig.borderColors["RAFAFALOC"]">
+                                                            <option></option>
+                                                            <option>17</option>
+                                                            <option>53</option>
+                                                        </select>
+                                                    </td>
+                                                }
+                                                @code
+                                                {
+	                                                protected string _RafafaLocation = string.Empty;
+	                                                protected string RafafaLocation
+	                                                {
+		                                                get
+		                                                {
+			                                                if (doorConfig != null)
+			                                                {
+				                                                _RafafaLocation = doorConfig.RAFAFALOC;
+			                                                }
+			                                                return _RafafaLocation;
+		                                                }
+		                                                set
+		                                                {
+			                                                _RafafaLocation = value;
+			                                                if (doorConfig != null)
+                                                            {
+				                                                doorConfig.RAFAFALOC = _RafafaLocation;
+                                                                doorConfig.borderColors["RAFAFALOC"] = (!string.IsNullOrEmpty(value) ? string.Empty : "redBorder");
+                                                                UiLogic.clearFollowingTabFields(doorConfig, "accessories");
+                                                            }
+		                                                }
+	                                                }
+                                                 }
+                                                 @if (!sl) {
+                                                    <td id="tdSafeLock" >
+                                                        <input type="checkbox" name="chkbSafeLock" @bind="SafeLock" />
+                                                    </td>
+                                                 }
+                                                    @code
+                                                    {
+	                                                    protected bool _SafeLock = false;
+	                                                    protected bool SafeLock
+	                                                    {
+		                                                    get
+		                                                    {
+			                                                    if (doorConfig != null)
+			                                                    {
+				                                                    _SafeLock = (doorConfig.SAFELOCK == "Y");
+			                                                    }
+			                                                    return _SafeLock;
+		                                                    }
+		                                                    set
+		                                                    {
+			                                                    _SafeLock = value;
+			                                                    if (doorConfig != null)
+				                                                    doorConfig.SAFELOCK = (_SafeLock ? "Y" : "");
+		                                                    }
+	                                                    }
+                                                    }
+
+                                                    @if (!wcb)
+                                                    {
+                                                        <td id="tdWetColorBox" >
+                                                            <input type="checkbox" name="chkbWetColorBox" @bind="WetColorBox" />
+                                                        </td>
+                                                    }
+                                                    @code
+                                                    {
+	                                                    protected bool _WetColorBox = false;
+	                                                    protected bool WetColorBox
+	                                                    {
+		                                                    get
+		                                                    {
+			                                                    if (doorConfig != null)
+			                                                    {
+				                                                    _WetColorBox = (doorConfig.WETCOLORBOX == "Y");
+			                                                    }
+			                                                    return _WetColorBox;
+		                                                    }
+		                                                    set
+		                                                    {
+			                                                    _WetColorBox = value;
+			                                                    if (doorConfig != null)
+				                                                    doorConfig.WETCOLORBOX = (_WetColorBox ? "Y" : "");
+		                                                    }
+	                                                    }
+                                                    }
+
+                                                    @if (!csp) {
+                                                        <td id="tdColorSpray" >
+                                                            <input type="checkbox" name="chkbColorSpray" @bind="ColorSpray" />
+                                                        </td>
+                                                    }
+                                                    @code
+                                                    {
+	                                                    protected bool _ColorSpray = false;
+	                                                    protected bool ColorSpray
+	                                                    {
+		                                                    get
+		                                                    {
+			                                                    if (doorConfig != null)
+			                                                    {
+				                                                    _ColorSpray = (doorConfig.COLORSPRAY == "Y");
+			                                                    }
+			                                                    return _ColorSpray;
+		                                                    }
+		                                                    set
+		                                                    {
+			                                                    _ColorSpray = value;
+			                                                    if (doorConfig != null)
+				                                                    doorConfig.COLORSPRAY = (_ColorSpray ? "Y" : "");
+		                                                    }
+	                                                    }
+                                                    }
+
+                                                    @if (!clsp) {
+                                                    <td id="tdCleaningSpray" >
+                                                        <input type="checkbox" name="chkbCleaningSpray" @bind="CleaningSpray" />
+                                                    </td>
+                                                    }
+                                                    @code
+                                                    {
+	                                                    protected bool _CleaningSpray = false;
+	                                                    protected bool CleaningSpray
+	                                                    {
+		                                                    get
+		                                                    {
+			                                                    if (doorConfig != null)
+			                                                    {
+				                                                    _CleaningSpray = (doorConfig.CLEANINGSPRAY
+                                                                    == "Y");
+			                                                    }
+			                                                    return _CleaningSpray;
+		                                                    }
+		                                                    set
+		                                                    {
+			                                                    _CleaningSpray = value;
+			                                                    if (doorConfig != null)
+				                                                    doorConfig.CLEANINGSPRAY = (_CleaningSpray ? "Y" : "");
+		                                                    }
+	                                                    }
+                                                    }
+
+                                                    @if (!cr)
+                                                    {
+                                                        <td id="tdCore" >
+                                                            <input type="checkbox" name="chkbCore" @bind="Core1" />
+                                                        </td>
+                                                    }
+                                                    @code
+                                                    {
+	                                                    protected bool _Core1 = false;
+	                                                    protected bool Core1
+	                                                    {
+		                                                    get
+		                                                    {
+			                                                    if (doorConfig != null)
+			                                                    {
+				                                                    _Core1 = (doorConfig.CORE == "Y");
+			                                                    }
+			                                                    return _Core1;
+		                                                    }
+		                                                    set
+		                                                    {
+			                                                    _Core1 = value;
+			                                                    if (doorConfig != null)
+				                                                    doorConfig.CORE = (_Core1 ? "Y" : "");
+		                                                    }
+	                                                    }
+                                                    }
+
+                                                    @if (!mz)
+                                                    {
+                                                        <td id="tdMezuza" >
+                                                            <input type="checkbox" name="chkbMezuza" @bind="Mezuza" />
+                                                        </td>
+                                                    }
+                                                    @code
+                                                    {
+	                                                    protected bool _Mezuza = false;
+	                                                    protected bool Mezuza
+	                                                    {
+		                                                    get
+		                                                    {
+			                                                    if (doorConfig != null)
+			                                                    {
+				                                                    _Mezuza = (doorConfig.MEZUZA == "Y");
+			                                                    }
+			                                                    return _Mezuza;
+		                                                    }
+		                                                    set
+		                                                    {
+			                                                    _Mezuza = value;
+			                                                    if (doorConfig != null)
+				                                                    doorConfig.MEZUZA = (_Mezuza ? "Y" : "");
+		                                                    }
+	                                                    }
+}
+
+                                                </tr>
+                                        </table>
